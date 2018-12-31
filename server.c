@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <string.h>
 
 #define PORT 8080
 #define BACKLOG 4
@@ -25,6 +26,16 @@ int server_accept(server_t* server) {
   }
 
   printf("Client connected!\n");
+
+  char buffer[1024] = {0};
+  int valread = read( conn_fd, buffer, 1024);
+  printf("%s\n", buffer);
+  if (valread < 0) {
+    printf("No bytes to read\n");
+  }
+
+  char *hello = "Hello from the server\n";
+  write(conn_fd , hello , strlen(hello));
 
   err = close(conn_fd);
   if (err == -1) {
