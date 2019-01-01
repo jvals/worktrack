@@ -6,3 +6,4 @@
 [] docker
 [] c-format
 [] health checks
+[] log level enum with color codes attached (default white)
