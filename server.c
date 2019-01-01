@@ -34,8 +34,8 @@ int server_accept(server_t* server) {
     printf("No bytes to read\n");
   }
 
-  char *hello = "Hello from the server\n";
-  write(conn_fd , hello , strlen(hello));
+  char *response = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello World!";
+  write(conn_fd, response, strlen(response));
 
   err = close(conn_fd);
   if (err == -1) {
