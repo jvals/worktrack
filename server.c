@@ -77,6 +77,8 @@ int server_listen(server_t* server) {
     printf("Failed to put socket in passive mode\n");
     return err;
   }
+
+  return err;
 }
 #define LOGGER(LEVEL, FORMAT_STRING, ...) logger((LEVEL), __FILE__, __LINE__, FORMAT_STRING, __VA_ARGS__)
 
