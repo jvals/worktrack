@@ -1,0 +1,8 @@
+[] Logging function with log-level, colors and variable length parameters (for strings)
+[] Write to sqlite db
+[] gitignore
+[] makefile
+[] readme
+[] docker
+[] c-format
+[] health checks
