@@ -81,54 +81,45 @@ int server_listen(server_t* server) {
 
 #define LOGGER(LEVEL, FORMAT_STRING, ...) logger((LEVEL), __FILE__, __LINE__, FORMAT_STRING, __VA_ARGS__)
 
+void print_colored_time_and_date(const char* color_code,
+                                 const char* status,
+                                 const char* file_name,
+                                 int line_number) {
+  printf("\033%s", color_code);
+  printf("[%s ", status);
+  // Time and date
+  time_t now;
+  time(&now);
+  char time_string[32];
+  strftime(time_string, sizeof(time_string), "%FT%T%z", localtime(&now));
+  printf("%s ", time_string);
+  printf("F:%s ", file_name);
+  printf("L:%d] ", line_number);
+}
+
+void reset_color() {
+  printf("\033[0m\n");
+}
+
 void logger(int log_level, const char* file_name, int line_number, const char* string, ...) {
   va_list arg;
   int done;
   va_start (arg, string);
-  // Switch on log_level
   switch (log_level) {
   case 0: { // Error
-    printf("\033[0;31m"); // RED
-    printf("[ERROR ");
-    // Time and date
-    time_t now;
-    time(&now);
-    char time_string[32];
-    strftime(time_string, sizeof(time_string), "%FT%T%z", localtime(&now));
-    printf("%s ", time_string);
-    printf("F:%s ", file_name);
-    printf("L:%d] ", line_number);
+    print_colored_time_and_date("[0;31m", "ERROR", file_name, line_number);
     done = vfprintf (stdout, string, arg);
-    printf("\033[0m\n");
+    reset_color();
     break;
   }
   case 1: { // WARNING
-    printf("\033[0;33m"); // YELLOW
-    printf("[WARN ");
-    // Time and date
-    time_t now;
-    time(&now);
-    char time_string[32];
-    strftime(time_string, sizeof(time_string), "%FT%T%z", localtime(&now));
-    printf("%s ", time_string);
-    printf("F:%s ", file_name);
-    printf("L:%d] ", line_number);
+    print_colored_time_and_date("[0;33m", "WARN", file_name, line_number);
     done = vfprintf (stdout, string, arg);
-    printf("\033[0m\n");
+    reset_color();
     break;
   }
-
-
   default: // INFO
-    printf("[INFO ");
-    // Time and date
-    time_t now;
-    time(&now);
-    char time_string[32];
-    strftime(time_string, sizeof(time_string), "%FT%T%z", localtime(&now));
-    printf("%s ", time_string);
-    printf("F:%s ", file_name);
-    printf("L:%d] ", line_number);
+    print_colored_time_and_date("[0m", "INFO", file_name, line_number);
     done = vfprintf (stdout, string, arg);
     printf("\n");
     break;
@@ -140,7 +131,7 @@ int main()
 {
   int err = 0;
   server_t server = { 0 };
-  LOGGER(1, "hello you %d %d", 5, 4);
+  LOGGER(4, "hello you %d %d", 5, 4);
   return 0;
 
   err = server_listen(&server);
