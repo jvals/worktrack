@@ -28,7 +28,7 @@ int server_accept(server_t* server) {
   printf("Client connected!\n");
 
   char buffer[1024] = {0};
-  int valread = read( conn_fd, buffer, 1024);
+  int valread = read(conn_fd, buffer, 1024);
   printf("%s\n", buffer);
   if (valread < 0) {
     printf("No bytes to read\n");
