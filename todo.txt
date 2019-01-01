@@ -8,3 +8,5 @@
 [] c-format
 [] health checks
 [x] log level enum with color codes attached (default white)
+[] yaml file with config (for secret header token)
+[] two endpoints start and stop
