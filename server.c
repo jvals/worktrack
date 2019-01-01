@@ -3,7 +3,8 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string.h>
-#include<stdarg.h>
+#include <stdarg.h>
+#include <time.h>
 
 #define PORT 8080
 #define BACKLOG 4
@@ -78,15 +79,58 @@ int server_listen(server_t* server) {
   }
 }
 
-void logger(int log_level, const char* string, ...) {
+void logger(int log_level, const char* file_name, int line_number, const char* string, ...) {
   va_list arg;
   int done;
   va_start (arg, string);
   // Switch on log_level
-  // Print color code
-  // Print log level, date, time, line number
-  done = vfprintf (stdout, string, arg);
-  // Print reset color code
+  switch (log_level) {
+  case 0: { // Error
+    printf("\033[0;31m"); // RED
+    printf("[ERROR ");
+    // Time and date
+    time_t now;
+    time(&now);
+    char time_string[32];
+    strftime(time_string, sizeof(time_string), "%FT%T%z", localtime(&now));
+    printf("%s ", time_string);
+    printf("F:%s ", file_name);
+    printf("L:%d] ", line_number);
+    done = vfprintf (stdout, string, arg);
+    printf("\033[0m\n");
+    break;
+  }
+  case 1: { // WARNING
+    printf("\033[0;33m"); // YELLOW
+    printf("[WARN ");
+    // Time and date
+    time_t now;
+    time(&now);
+    char time_string[32];
+    strftime(time_string, sizeof(time_string), "%FT%T%z", localtime(&now));
+    printf("%s ", time_string);
+    printf("F:%s ", file_name);
+    printf("L:%d] ", line_number);
+    done = vfprintf (stdout, string, arg);
+    printf("\033[0m\n");
+    break;
+  }
+
+
+  default: // INFO
+    printf("[INFO ");
+    // Time and date
+    time_t now;
+    time(&now);
+    char time_string[32];
+    strftime(time_string, sizeof(time_string), "%FT%T%z", localtime(&now));
+    printf("%s ", time_string);
+    printf("F:%s ", file_name);
+    printf("L:%d] ", line_number);
+    done = vfprintf (stdout, string, arg);
+    printf("\n");
+    break;
+  }
   va_end (arg);
 }
 
@@ -94,7 +138,7 @@ int main()
 {
   int err = 0;
   server_t server = { 0 };
-  logger(0, "hello you %d\n", 0, 5);
+  logger(3, __FILE__, __LINE__, "hello you %d", 5);
   return 0;
 
   err = server_listen(&server);
