@@ -1,4 +1,5 @@
-[] Logging function with log-level, colors and variable length parameters (for strings)
+[x] Logging function with log-level, colors and variable length parameters (for strings)
+[] split out logger
 [] Write to sqlite db
 [] gitignore
 [] makefile
@@ -6,4 +7,4 @@
 [] docker
 [] c-format
 [] health checks
-[] log level enum with color codes attached (default white)
+[x] log level enum with color codes attached (default white)
