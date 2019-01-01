@@ -3,6 +3,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string.h>
+#include<stdarg.h>
 
 #define PORT 8080
 #define BACKLOG 4
@@ -77,10 +78,24 @@ int server_listen(server_t* server) {
   }
 }
 
+void logger(int log_level, const char* string, ...) {
+  va_list arg;
+  int done;
+  va_start (arg, string);
+  // Switch on log_level
+  // Print color code
+  // Print log level, date, time, line number
+  done = vfprintf (stdout, string, arg);
+  // Print reset color code
+  va_end (arg);
+}
+
 int main()
 {
   int err = 0;
   server_t server = { 0 };
+  logger(0, "hello you %d\n", 0, 5);
+  return 0;
 
   err = server_listen(&server);
   if(err) {
