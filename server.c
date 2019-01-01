@@ -78,14 +78,26 @@ int server_listen(server_t* server) {
     return err;
   }
 }
-
 #define LOGGER(LEVEL, FORMAT_STRING, ...) logger((LEVEL), __FILE__, __LINE__, FORMAT_STRING, __VA_ARGS__)
+
+
 #define CODE_RED "[0;31m"
 #define CODE_YELLOW "[0;33m"
 #define CODE_RESET "[0m"
 
-enum LOG_LEVELS {ERROR, WARN, INFO};
-
+enum LOG_LEVELS {INFO, WARN, ERROR};
+#ifdef LOG_INFO
+#define LOG_LIMIT INFO
+#endif
+#ifdef LOG_WARN
+#define LOG_LIMIT WARN
+#endif
+#ifdef LOG_ERROR
+#define LOG_LIMIT ERROR
+#endif
+#ifndef LOG_LIMIT
+#define LOG_LIMIT ERROR
+#endif
 
 void print_colored_time_and_date(const char* color_code,
                                  const char* status,
@@ -108,26 +120,19 @@ void reset_color() {
 
 void logger(enum LOG_LEVELS log_level, const char* file_name, int line_number, const char* string, ...) {
   va_list arg;
-  int done;
   va_start (arg, string);
-  switch (log_level) {
-  case ERROR: {
+  if (log_level == ERROR && LOG_LIMIT <= ERROR) {
     print_colored_time_and_date(CODE_RED, "ERROR", file_name, line_number);
-    done = vfprintf (stdout, string, arg);
+    vfprintf (stdout, string, arg);
     reset_color();
-    break;
-  }
-  case WARN: {
+  } else if (log_level == WARN && LOG_LIMIT <= WARN) {
     print_colored_time_and_date(CODE_YELLOW, "WARN", file_name, line_number);
-    done = vfprintf (stdout, string, arg);
+    vfprintf (stdout, string, arg);
     reset_color();
-    break;
-  }
-  default: // INFO
+  } else if (log_level == INFO && LOG_LIMIT <= INFO) {
     print_colored_time_and_date(CODE_RESET, "INFO", file_name, line_number);
-    done = vfprintf (stdout, string, arg);
+    vfprintf(stdout, string, arg);
     printf("\n");
-    break;
   }
   va_end (arg);
 }
@@ -137,6 +142,8 @@ int main()
   int err = 0;
   server_t server = { 0 };
   LOGGER(ERROR, "hello you %d %d", 5, 4);
+  LOGGER(WARN, "hello you %d %d", 5, 4);
+  LOGGER(INFO, "hello you %d %d", 5, 4);
   return 0;
 
   err = server_listen(&server);
