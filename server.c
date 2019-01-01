@@ -80,6 +80,12 @@ int server_listen(server_t* server) {
 }
 
 #define LOGGER(LEVEL, FORMAT_STRING, ...) logger((LEVEL), __FILE__, __LINE__, FORMAT_STRING, __VA_ARGS__)
+#define CODE_RED "[0;31m"
+#define CODE_YELLOW "[0;33m"
+#define CODE_RESET "[0m"
+
+enum LOG_LEVELS {ERROR, WARN, INFO};
+
 
 void print_colored_time_and_date(const char* color_code,
                                  const char* status,
@@ -87,7 +93,6 @@ void print_colored_time_and_date(const char* color_code,
                                  int line_number) {
   printf("\033%s", color_code);
   printf("[%s ", status);
-  // Time and date
   time_t now;
   time(&now);
   char time_string[32];
@@ -98,28 +103,28 @@ void print_colored_time_and_date(const char* color_code,
 }
 
 void reset_color() {
-  printf("\033[0m\n");
+  printf("\033%s\n", CODE_RESET);
 }
 
-void logger(int log_level, const char* file_name, int line_number, const char* string, ...) {
+void logger(enum LOG_LEVELS log_level, const char* file_name, int line_number, const char* string, ...) {
   va_list arg;
   int done;
   va_start (arg, string);
   switch (log_level) {
-  case 0: { // Error
-    print_colored_time_and_date("[0;31m", "ERROR", file_name, line_number);
+  case ERROR: {
+    print_colored_time_and_date(CODE_RED, "ERROR", file_name, line_number);
     done = vfprintf (stdout, string, arg);
     reset_color();
     break;
   }
-  case 1: { // WARNING
-    print_colored_time_and_date("[0;33m", "WARN", file_name, line_number);
+  case WARN: {
+    print_colored_time_and_date(CODE_YELLOW, "WARN", file_name, line_number);
     done = vfprintf (stdout, string, arg);
     reset_color();
     break;
   }
   default: // INFO
-    print_colored_time_and_date("[0m", "INFO", file_name, line_number);
+    print_colored_time_and_date(CODE_RESET, "INFO", file_name, line_number);
     done = vfprintf (stdout, string, arg);
     printf("\n");
     break;
@@ -131,7 +136,7 @@ int main()
 {
   int err = 0;
   server_t server = { 0 };
-  LOGGER(4, "hello you %d %d", 5, 4);
+  LOGGER(ERROR, "hello you %d %d", 5, 4);
   return 0;
 
   err = server_listen(&server);
