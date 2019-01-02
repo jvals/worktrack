@@ -5,7 +5,8 @@
 [] makefile
 [] readme
 [] docker
-[] c-format
+[x] clang-format
+[] Auto clang-format
 [] health checks
 [x] log level enum with color codes attached (default white)
 [] yaml file with config (for secret header token)
