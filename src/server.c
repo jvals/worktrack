@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <time.h>
 #include <unistd.h>
+#include <errno.h>
 
 #define PORT 8080
 #define BACKLOG 4
@@ -80,7 +81,7 @@ int server_accept(server_t* server) {
   err = (conn_fd = accept(server->listen_fd, (struct sockaddr*)&client_addr,
                           &client_len));
   if (err == -1) {
-    perror("accept");
+    LOGGER(ERROR, "accept %s", strerror(errno));
     printf("failed accepting connection\n");
     return err;
   }
@@ -90,18 +91,22 @@ int server_accept(server_t* server) {
   char buffer[1024] = {0};
   int valread = read(conn_fd, buffer, 1024);
   printf("%s\n", buffer);
-  if (valread < 0) {
+  if (valread == 0) {
     printf("No bytes to read\n");
+  } else if (valread < 0) {
+    LOGGER(ERROR, "read %s", strerror(errno));
   }
 
   char* response =
       "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello "
       "World!";
-  write(conn_fd, response, strlen(response));
-
+  err = send(conn_fd, response, strlen(response), MSG_NOSIGNAL);
+  if (err == -1) {
+      LOGGER(ERROR, "send %s", strerror(errno));
+  }
   err = close(conn_fd);
   if (err == -1) {
-    perror("close");
+    LOGGER(ERROR, "close %s", strerror(errno));
     printf("failed to close connection\n");
     return err;
   }
@@ -119,7 +124,7 @@ int server_listen(server_t* server) {
 
   err = (server->listen_fd = socket(AF_INET, SOCK_STREAM, 0));
   if (err == -1) {
-    perror("socket");
+    LOGGER(ERROR, "socket %s", strerror(errno));
     printf("Failed to create socket endpoint\n");
     return err;
   }
@@ -127,14 +132,14 @@ int server_listen(server_t* server) {
   err = bind(server->listen_fd, (struct sockaddr*)&server_addr,
              sizeof(server_addr));
   if (err == -1) {
-    perror("bind");
+    LOGGER(ERROR, "bind %s", strerror(errno));
     printf("Failed to bind socket to address\n");
     return err;
   }
 
   err = listen(server->listen_fd, BACKLOG);
   if (err == -1) {
-    perror("listen");
+    LOGGER(ERROR, "listen %s", strerror(errno));
     printf("Failed to put socket in passive mode\n");
     return err;
   }
@@ -145,10 +150,6 @@ int server_listen(server_t* server) {
 int main() {
   int err = 0;
   server_t server = {0};
-  LOGGER(ERROR, "hello you %d %d", 5, 4);
-  LOGGER(WARN, "hello you %d %d", 5, 4);
-  LOGGER(INFO, "hello you %d %d", 5, 4);
-  return 0;
 
   err = server_listen(&server);
   if (err) {
