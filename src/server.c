@@ -6,6 +6,12 @@
 #include <errno.h>
 #include <logger.h>
 
+#ifdef __linux__
+#define NOSIGNAL MSG_NOSIGNAL
+#elif __APPLE__
+#define NOSIGNAL SO_NOSIGPIPE
+#endif
+
 #define PORT 8080
 #define BACKLOG 4
 
@@ -42,7 +48,7 @@ int server_accept(server_t* server) {
   char* response =
       "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello "
       "World!";
-  err = send(conn_fd, response, strlen(response), SO_NOSIGPIPE);
+  err = send(conn_fd, response, strlen(response), NOSIGNAL);
   if (err == -1) {
       LOGGER(ERROR, "send %s", strerror(errno));
   }
