@@ -1,8 +1,8 @@
 [x] Logging function with log-level, colors and variable length parameters (for strings)
-[] split out logger
+[x] split out logger
 [] Write to sqlite db
 [] gitignore
-[] makefile
+[x] makefile
 [] readme
 [] docker
 [x] clang-format
