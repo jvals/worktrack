@@ -30,20 +30,20 @@ int server_accept(server_t* server) {
                           &client_len));
   if (err == -1) {
     LOGGER(FATAL, "accept %s", strerror(errno));
-    LOGGER(FATAL, "failed accepting connection\n");
+    LOGGER(FATAL, "failed accepting connection\n", "");
     return err;
   }
 
-  LOGGER(TRACE, "Client connected!\n");
+  LOGGER(TRACE, "Client connected!\n", "");
 
   char buffer[1024] = {0};
   int valread = read(conn_fd, buffer, 1024);
   if (valread == 0) {
-    LOGGER(DEBUG, "No bytes to read\n");
+    LOGGER(DEBUG, "No bytes to read\n", "");
   } else if (valread < 0) {
     LOGGER(ERROR, "read %s", strerror(errno));
   } else {
-    LOGGER(INFO, "Received content: %s\n", buffer);
+    LOGGER(INFO, "Received content:\n %s\n", buffer);
   }
 
   char* response =
@@ -56,7 +56,7 @@ int server_accept(server_t* server) {
   err = close(conn_fd);
   if (err == -1) {
     LOGGER(FATAL, "close %s", strerror(errno));
-    LOGGER(FATAL, "failed to close connection\n");
+    LOGGER(FATAL, "failed to close connection\n", "");
     return err;
   }
 
@@ -74,7 +74,7 @@ int server_listen(server_t* server) {
   err = (server->listen_fd = socket(AF_INET, SOCK_STREAM, 0));
   if (err == -1) {
     LOGGER(FATAL, "socket %s", strerror(errno));
-    LOGGER(FATAL, "Failed to create socket endpoint\n");
+    LOGGER(FATAL, "Failed to create socket endpoint\n", "");
     return err;
   }
 
@@ -82,14 +82,14 @@ int server_listen(server_t* server) {
              sizeof(server_addr));
   if (err == -1) {
     LOGGER(FATAL, "bind %s", strerror(errno));
-    LOGGER(FATAL, "Failed to bind socket to address\n");
+    LOGGER(FATAL, "Failed to bind socket to address\n", "");
     return err;
   }
 
   err = listen(server->listen_fd, BACKLOG);
   if (err == -1) {
     LOGGER(FATAL, "listen %s", strerror(errno));
-    LOGGER(FATAL, "Failed to put socket in passive mode\n");
+    LOGGER(FATAL, "Failed to put socket in passive mode\n", "");
     return err;
   }
 
@@ -109,7 +109,7 @@ int main() {
   while (1) {
     err = server_accept(&server);
     if (err) {
-      LOGGER(FATAL, "Failed accepting connection\n");
+      LOGGER(FATAL, "Failed accepting connection\n", "");
       return err;
     }
   }

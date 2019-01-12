@@ -1,4 +1,4 @@
-CFLAGS := -O3 -Wall -Wextra -Wpedantic -march=native
+CFLAGS := -O3 -Wall -Wextra -Wpedantic -march=native -D LOG_ALL
 
 liblogger.a: logger.o
 	ar rcs $@ $<

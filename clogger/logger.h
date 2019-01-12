@@ -1,5 +1,5 @@
 #define LOGGER(LEVEL, FORMAT_STRING, ...)                         \
-  logger((LEVEL), __FILE__, __LINE__, FORMAT_STRING, __VA_ARGS__)
+  logger((LEVEL), __FILE__, __LINE__, (FORMAT_STRING), __VA_ARGS__)
 
 #define CODE_RED "[0;31m"
 #define CODE_BOLD_RED "[1;31m"
