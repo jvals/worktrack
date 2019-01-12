@@ -29,17 +29,17 @@ int server_accept(server_t* server) {
   err = (conn_fd = accept(server->listen_fd, (struct sockaddr*)&client_addr,
                           &client_len));
   if (err == -1) {
-    LOGGER(ERROR, "accept %s", strerror(errno));
-    LOGGER(ERROR, "failed accepting connection\n");
+    LOGGER(FATAL, "accept %s", strerror(errno));
+    LOGGER(FATAL, "failed accepting connection\n");
     return err;
   }
 
-  LOGGER(INFO, "Client connected!\n");
+  LOGGER(TRACE, "Client connected!\n");
 
   char buffer[1024] = {0};
   int valread = read(conn_fd, buffer, 1024);
   if (valread == 0) {
-    LOGGER(INFO, "No bytes to read\n");
+    LOGGER(DEBUG, "No bytes to read\n");
   } else if (valread < 0) {
     LOGGER(ERROR, "read %s", strerror(errno));
   } else {
@@ -55,8 +55,8 @@ int server_accept(server_t* server) {
   }
   err = close(conn_fd);
   if (err == -1) {
-    LOGGER(ERROR, "close %s", strerror(errno));
-    LOGGER(ERROR, "failed to close connection\n");
+    LOGGER(FATAL, "close %s", strerror(errno));
+    LOGGER(FATAL, "failed to close connection\n");
     return err;
   }
 
@@ -73,23 +73,23 @@ int server_listen(server_t* server) {
 
   err = (server->listen_fd = socket(AF_INET, SOCK_STREAM, 0));
   if (err == -1) {
-    LOGGER(ERROR, "socket %s", strerror(errno));
-    LOGGER(ERROR, "Failed to create socket endpoint\n");
+    LOGGER(FATAL, "socket %s", strerror(errno));
+    LOGGER(FATAL, "Failed to create socket endpoint\n");
     return err;
   }
 
   err = bind(server->listen_fd, (struct sockaddr*)&server_addr,
              sizeof(server_addr));
   if (err == -1) {
-    LOGGER(ERROR, "bind %s", strerror(errno));
-    LOGGER(ERROR, "Failed to bind socket to address\n");
+    LOGGER(FATAL, "bind %s", strerror(errno));
+    LOGGER(FATAL, "Failed to bind socket to address\n");
     return err;
   }
 
   err = listen(server->listen_fd, BACKLOG);
   if (err == -1) {
-    LOGGER(ERROR, "listen %s", strerror(errno));
-    LOGGER(ERROR, "Failed to put socket in passive mode\n");
+    LOGGER(FATAL, "listen %s", strerror(errno));
+    LOGGER(FATAL, "Failed to put socket in passive mode\n");
     return err;
   }
 
@@ -102,14 +102,14 @@ int main() {
 
   err = server_listen(&server);
   if (err) {
-    LOGGER(ERROR, "Failed to listen on address 0.0.0.0:%d\n", PORT);
+    LOGGER(FATAL, "Failed to listen on address 0.0.0.0:%d\n", PORT);
     return err;
   }
 
   while (1) {
     err = server_accept(&server);
     if (err) {
-      LOGGER(ERROR, "Failed accepting connection\n");
+      LOGGER(FATAL, "Failed accepting connection\n");
       return err;
     }
   }
