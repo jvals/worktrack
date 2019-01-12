@@ -30,19 +30,20 @@ int server_accept(server_t* server) {
                           &client_len));
   if (err == -1) {
     LOGGER(ERROR, "accept %s", strerror(errno));
-    printf("failed accepting connection\n");
+    LOGGER(ERROR, "failed accepting connection\n");
     return err;
   }
 
-  printf("Client connected!\n");
+  LOGGER(INFO, "Client connected!\n");
 
   char buffer[1024] = {0};
   int valread = read(conn_fd, buffer, 1024);
-  printf("%s\n", buffer);
   if (valread == 0) {
-    printf("No bytes to read\n");
+    LOGGER(INFO, "No bytes to read\n");
   } else if (valread < 0) {
     LOGGER(ERROR, "read %s", strerror(errno));
+  } else {
+    LOGGER(INFO, "Received content: %s\n", buffer);
   }
 
   char* response =
@@ -55,7 +56,7 @@ int server_accept(server_t* server) {
   err = close(conn_fd);
   if (err == -1) {
     LOGGER(ERROR, "close %s", strerror(errno));
-    printf("failed to close connection\n");
+    LOGGER(ERROR, "failed to close connection\n");
     return err;
   }
 
@@ -73,7 +74,7 @@ int server_listen(server_t* server) {
   err = (server->listen_fd = socket(AF_INET, SOCK_STREAM, 0));
   if (err == -1) {
     LOGGER(ERROR, "socket %s", strerror(errno));
-    printf("Failed to create socket endpoint\n");
+    LOGGER(ERROR, "Failed to create socket endpoint\n");
     return err;
   }
 
@@ -81,14 +82,14 @@ int server_listen(server_t* server) {
              sizeof(server_addr));
   if (err == -1) {
     LOGGER(ERROR, "bind %s", strerror(errno));
-    printf("Failed to bind socket to address\n");
+    LOGGER(ERROR, "Failed to bind socket to address\n");
     return err;
   }
 
   err = listen(server->listen_fd, BACKLOG);
   if (err == -1) {
     LOGGER(ERROR, "listen %s", strerror(errno));
-    printf("Failed to put socket in passive mode\n");
+    LOGGER(ERROR, "Failed to put socket in passive mode\n");
     return err;
   }
 
@@ -101,14 +102,14 @@ int main() {
 
   err = server_listen(&server);
   if (err) {
-    printf("Failed to listen on address 0.0.0.0:%d\n", PORT);
+    LOGGER(ERROR, "Failed to listen on address 0.0.0.0:%d\n", PORT);
     return err;
   }
 
   while (1) {
     err = server_accept(&server);
     if (err) {
-      printf("Failed accepting connection\n");
+      LOGGER(ERROR, "Failed accepting connection\n");
       return err;
     }
   }
