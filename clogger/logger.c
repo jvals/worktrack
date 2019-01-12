@@ -24,7 +24,11 @@ void logger(enum LOG_LEVELS log_level, const char* file_name, int line_number,
             const char* string, ...) {
   va_list arg;
   va_start(arg, string);
-  if (log_level == ERROR && LOG_LIMIT <= ERROR) {
+  if (log_level == FATAL && LOG_LIMIT <= FATAL) {
+    print_colored_time_and_date(CODE_BOLD_RED, "FATAL", file_name, line_number);
+    vfprintf(stdout, string, arg);
+    reset_color();
+  } else if (log_level == ERROR && LOG_LIMIT <= ERROR) {
     print_colored_time_and_date(CODE_RED, "ERROR", file_name, line_number);
     vfprintf(stdout, string, arg);
     reset_color();
@@ -36,6 +40,14 @@ void logger(enum LOG_LEVELS log_level, const char* file_name, int line_number,
     print_colored_time_and_date(CODE_RESET, "INFO", file_name, line_number);
     vfprintf(stdout, string, arg);
     printf("\n");
+  } else if (log_level == DEBUG && LOG_LIMIT <= DEBUG) {
+    print_colored_time_and_date(CODE_MAGENTA, "DEBUG", file_name, line_number);
+    vfprintf(stdout, string, arg);
+    reset_color();
+  } else if (log_level == TRACE && LOG_LIMIT <= TRACE) {
+    print_colored_time_and_date(CODE_RESET, "TRACE", file_name, line_number);
+    vfprintf(stdout, string, arg);
+    reset_color();
   }
   va_end(arg);
 }
