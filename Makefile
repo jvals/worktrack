@@ -15,7 +15,7 @@ SRC_FILES := $(wildcard $(SRCDIR)/*.c)
 OBJ_FILES := $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC_FILES))
 
 $(TARGET): $(OBJ_FILES)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) -o $@ $^ $(LDFLAGS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(@D)
