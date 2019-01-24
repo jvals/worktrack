@@ -23,9 +23,14 @@ response_t route(request_t req) {
   LOGGER(TRACE, "Routing request with path=%s and method=%s\n", req.path, req.method);
 
   name_action_map = malloc(10 * sizeof(name_action_mapping_t));
-  name_action_map[0].action_name = "start_time";
-  name_action_map[0].action = start_time;
+  name_action_map[0].action_name = "get_total_time";
+  name_action_map[0].action = get_total_time;
 
+  name_action_map[1].action_name = "start_time";
+  name_action_map[1].action = start_time;
+
+  name_action_map[2].action_name = "stop_time";
+  name_action_map[2].action = stop_time;
   // TODO: Populate a route array from routes.ini
   route_t routes[10];
   routes[0].name = "get_total_time";
@@ -44,10 +49,10 @@ response_t route(request_t req) {
   routes[2].action = "stop_time";
 
   for (int i = 0; i < 3; ++i) {
-    if (strcmp(req.path, routes[i].path)==0 && strcmp(req.method, routes[i].method)) {
+    if (strcmp(req.path, routes[i].path)==0 && strcmp(req.method, routes[i].method) == 0) {
       LOGGER(TRACE, "Found matching route!\n", "");
-      for (int j = 0; j < 1; ++j) {
-        if (strcmp(routes[i].action, name_action_map[j].action_name)) {
+      for (int j = 0; j < 3; ++j) {
+        if (strcmp(routes[i].action, name_action_map[j].action_name) == 0) {
           LOGGER(TRACE, "Found matching implmentation!\n", "");
           response_t response = name_action_map[j].action(req);
           return response;
