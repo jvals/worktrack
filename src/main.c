@@ -10,6 +10,8 @@ int main() {
   if (err) {
     LOGGER(FATAL, "Failed to listen on address 0.0.0.0:%d\n", PORT);
     return err;
+  } else {
+    LOGGER(INFO, "Successfully opened TCP socket on address 0.0.0.0:%d\n", PORT);
   }
 
   while (1) {
