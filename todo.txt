@@ -1,15 +1,19 @@
 Important
 [x] Parse request into a struct containing path, method, headers and body(?)
 [x] Verify struct
-[] set up testcontroller
-[] set up routing
+[x] set up testcontroller
+[x] set up routing
+[] read and parse routes.yml
+[] optional headers
+[] Write to sqlite db
+[] two endpoints start and stop
+[]
 
 Bonus
 [] string function which escapes special char codes
 [] Catch sigint and close server
 [x] Logging function with log-level, colors and variable length parameters (for strings)
 [x] split out logger
-[] Write to sqlite db
 [x] gitignore
 [x] makefile
 [] readme
@@ -19,5 +23,4 @@ Bonus
 [] health checks
 [x] log level enum with color codes attached (default white)
 [] yaml file with config (for secret header token)
-[] two endpoints start and stop
 [] init for logger (to set log limit)
