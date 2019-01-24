@@ -8,6 +8,9 @@
 #include <stdlib.h>
 
 #include "server.h"
+#include "request.h"
+#include "response.h"
+#include "router.h"
 
 #define BACKLOG 4
 
@@ -16,20 +19,6 @@
 #elif __APPLE__
 #define NOSIGNAL SO_NOSIGPIPE
 #endif
-
-typedef struct headers {
-  char* accept_encoding;
-  char* connection;
-  char* host;
-  char* user_agent;
-} headers_t;
-
-typedef struct request {
-  char* path;
-  char* method;
-  headers_t headers;
-  char* body;
-} request_t;
 
 int server_accept(server_t* server) {
   int err = 0;
@@ -59,7 +48,7 @@ int server_accept(server_t* server) {
   }
 
   // Parse request
-  headers_t headers = {0};
+  request_headers_t headers = {0};
   request_t request = {0};
 
   // Parse start line
@@ -137,10 +126,14 @@ int server_accept(server_t* server) {
     LOGGER(DEBUG, "No method found in request, dropping request\n", "");
     // TODO: Error handling
   }
-  char* response =
+
+  // Route the request to matching controller and action
+  response_t response = route(request);
+
+  char* response_raw =
       "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello "
       "World!";
-  err = send(conn_fd, response, strlen(response), NOSIGNAL);
+  err = send(conn_fd, response_raw, strlen(response_raw), NOSIGNAL);
   if (err == -1) {
       LOGGER(ERROR, "send %s", strerror(errno));
   }
