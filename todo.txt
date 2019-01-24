@@ -1,3 +1,9 @@
+Important
+[] Parse request into a struct containing path, method, headers and body(?)
+[]
+
+Bonus
+[] Catch sigint and close server
 [x] Logging function with log-level, colors and variable length parameters (for strings)
 [x] split out logger
 [] Write to sqlite db
