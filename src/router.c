@@ -2,15 +2,10 @@
 #include <string.h>
 #include <logger.h>
 
+#include "route.h"
 #include "router.h"
 #include "time_controller.h"
 
-typedef struct route {
-  char* name;
-  char* path;
-  char* method;
-  char* action;
-} route_t;
 
 typedef struct name_action_mapping {
   char* action_name;
@@ -31,22 +26,6 @@ response_t route(request_t req) {
 
   name_action_map[2].action_name = "stop_time";
   name_action_map[2].action = stop_time;
-  // TODO: Populate a route array from routes.ini
-  route_t routes[10];
-  routes[0].name = "get_total_time";
-  routes[0].path = "/time";
-  routes[0].method = "GET";
-  routes[0].action = "get_total_time";
-
-  routes[1].name = "start_time";
-  routes[1].path = "/time";
-  routes[1].method = "POST";
-  routes[1].action = "start_time";
-
-  routes[2].name = "stop_time";
-  routes[2].path = "/time";
-  routes[2].method = "PATCH";
-  routes[2].action = "stop_time";
 
   for (int i = 0; i < 3; ++i) {
     if (strcmp(req.path, routes[i].path)==0 && strcmp(req.method, routes[i].method) == 0) {
