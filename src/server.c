@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <logger.h>
+#include <stdlib.h>
 
 #include "server.h"
 
@@ -56,6 +57,75 @@ int server_accept(server_t* server) {
   } else {
     LOGGER(INFO, "Received content:\n%s\n", buffer);
   }
+
+  // Parse request
+  headers_t headers = {0};
+  request_t request = {0};
+
+  // Parse start line
+  char* request_raw = strdup(buffer);
+  char* start_line = strsep(&request_raw, "\n");
+  if (start_line == NULL) {
+    LOGGER(DEBUG, "Start line was NULL\n", "");
+    // TODO: Error handling
+  }
+
+  LOGGER(TRACE, "Parsing start_line: %s\n", start_line);
+  char* token = NULL;
+
+  int start_line_idx = 0;
+  while ( (token = strsep(&start_line, " ")) != NULL ) {
+    if (start_line_idx == 0) {
+      request.method = token;
+    } else if (start_line_idx == 1) {
+      request.path = token;
+    }
+    start_line_idx++;
+  }
+
+  // Parse headers
+  LOGGER(TRACE, "Parsing headers\n", "");
+  char* request_line = NULL;
+  int consecutive_empty = 0; // Detecting when headers end and body begin
+  while ( (request_line = strsep(&request_raw, "\r\n")) != NULL ) {
+    if (strcmp(request_line, "") == 0) {
+      consecutive_empty++;
+    } else {
+      consecutive_empty = 0;
+      // Headers are of the format key:value, so we need to split again
+      char* header_key = strsep(&request_line, ":");
+      char* header_value = strdup(request_line);
+      if (header_key != NULL && header_value != NULL) {
+        if (strcmp(header_key, "Accept-Encoding")) {
+          headers.accept_encoding = header_value;
+        } else if (strcmp(header_key, "Connection")) {
+          headers.connection = header_value;
+        } else if (strcmp(header_key, "Host")) {
+          headers.host = header_value;
+        } else if (strcmp(header_key, "User-Agent")) {
+          headers.user_agent = header_value;
+        }
+      } else {
+        LOGGER(DEBUG, "Malformed headers, dropping request", "");
+        // TODO: Error handling
+      }
+      free(header_value);
+
+      LOGGER(TRACE, "Found header with key=%s and value=%s\n", header_key, header_value);
+    }
+
+    // Two (three empty lines from strsep) newlines indicate that the header section is ending
+    if (consecutive_empty == 3) {
+      break;
+    }
+  }
+  free(request_raw);
+
+  request.headers = headers;
+
+  // Parse body
+  LOGGER(TRACE, "Parsing request body\n", "");
+  LOGGER(DEBUG, "Ignoring request body\n", "");
 
   char* response =
       "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello "
