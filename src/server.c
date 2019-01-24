@@ -64,6 +64,7 @@ int server_accept(server_t* server) {
 
   // Parse start line
   char* request_raw = strdup(buffer);
+  char* original_request_raw = request_raw;
   char* start_line = strsep(&request_raw, "\n");
   if (start_line == NULL) {
     LOGGER(DEBUG, "Start line was NULL\n", "");
@@ -105,13 +106,12 @@ int server_accept(server_t* server) {
         } else if (strcmp(header_key, "User-Agent")) {
           headers.user_agent = header_value;
         }
+        LOGGER(TRACE, "Found header with key=%s and value=%s\n", header_key, header_value);
+        free(header_value);
       } else {
         LOGGER(DEBUG, "Malformed headers, dropping request", "");
         // TODO: Error handling
       }
-      free(header_value);
-
-      LOGGER(TRACE, "Found header with key=%s and value=%s\n", header_key, header_value);
     }
 
     // Two (three empty lines from strsep) newlines indicate that the header section is ending
@@ -119,7 +119,7 @@ int server_accept(server_t* server) {
       break;
     }
   }
-  free(request_raw);
+  free(original_request_raw);
 
   request.headers = headers;
 
