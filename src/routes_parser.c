@@ -4,10 +4,9 @@
 #include <logger.h>
 #include <stdlib.h>
 
-#include "route.h"
+#include "routes_parser.h"
 
 #define ROUTES_FILE_NAME "routes.ini"
-#define MAX_ROUTE_ARRAY_SIZE 64
 #define MAX_CONFIG_LINE_SIZE 64
 
 // Global route list

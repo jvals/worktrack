@@ -1,3 +1,5 @@
+#pragma once
+
 typedef struct route {
   char* name;
   char* path;

@@ -5,6 +5,7 @@
 #include "route.h"
 #include "router.h"
 #include "time_controller.h"
+#include "routes_parser.h"
 
 
 typedef struct name_action_mapping {
@@ -14,23 +15,33 @@ typedef struct name_action_mapping {
 
 name_action_mapping_t* name_action_map;
 
+void init_name_action_map() {
+  int idx = 0;
+
+  name_action_map = malloc(MAX_ROUTE_ARRAY_SIZE * sizeof(name_action_mapping_t));
+  name_action_map[idx].action_name = "get_total_time";
+  name_action_map[idx++].action = get_total_time;
+
+  name_action_map[idx].action_name = "start_time";
+  name_action_map[idx++].action = start_time;
+
+  name_action_map[idx].action_name = "stop_time";
+  name_action_map[idx++].action = stop_time;
+}
+
+void deinit_name_action_map() {
+  free(name_action_map);
+}
+
 response_t route(request_t req) {
   LOGGER(TRACE, "Routing request with path=%s and method=%s\n", req.path, req.method);
 
-  name_action_map = malloc(10 * sizeof(name_action_mapping_t));
-  name_action_map[0].action_name = "get_total_time";
-  name_action_map[0].action = get_total_time;
+  init_name_action_map();
 
-  name_action_map[1].action_name = "start_time";
-  name_action_map[1].action = start_time;
-
-  name_action_map[2].action_name = "stop_time";
-  name_action_map[2].action = stop_time;
-
-  for (int i = 0; i < 3; ++i) {
+  for (int i = 0; i < MAX_ROUTE_ARRAY_SIZE; ++i) {
     if (strcmp(req.path, routes[i].path)==0 && strcmp(req.method, routes[i].method) == 0) {
       LOGGER(TRACE, "Found matching route!\n", "");
-      for (int j = 0; j < 3; ++j) {
+      for (int j = 0; j < MAX_ROUTE_ARRAY_SIZE; ++j) {
         if (strcmp(routes[i].action, name_action_map[j].action_name) == 0) {
           LOGGER(TRACE, "Found matching implmentation!\n", "");
           response_t response = name_action_map[j].action(req);
@@ -42,9 +53,10 @@ response_t route(request_t req) {
     }
   }
 
+  deinit_routes();
 
   // Respond with 404
-  LOGGER(DEBUG, "No mathing route found\n", "");
+  LOGGER(DEBUG, "No matching route found\n", "");
   response_t response;
   response.status_code = 404;
   response.status_message = "Not found";
