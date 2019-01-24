@@ -1,0 +1,4 @@
+language: c
+
+script:
+	- diff -uq <(cat src/*) <(clang-format src/*)
