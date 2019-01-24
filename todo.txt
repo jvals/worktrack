@@ -3,6 +3,7 @@ Important
 []
 
 Bonus
+[] string function which escapes special char codes
 [] Catch sigint and close server
 [x] Logging function with log-level, colors and variable length parameters (for strings)
 [x] split out logger
