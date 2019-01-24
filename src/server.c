@@ -6,18 +6,15 @@
 #include <errno.h>
 #include <logger.h>
 
+#include "server.h"
+
+#define BACKLOG 4
+
 #ifdef __linux__
 #define NOSIGNAL MSG_NOSIGNAL
 #elif __APPLE__
 #define NOSIGNAL SO_NOSIGPIPE
 #endif
-
-#define PORT 8080
-#define BACKLOG 4
-
-typedef struct server {
-  int listen_fd;
-} server_t;
 
 int server_accept(server_t* server) {
   int err = 0;
@@ -43,7 +40,7 @@ int server_accept(server_t* server) {
   } else if (valread < 0) {
     LOGGER(ERROR, "read %s", strerror(errno));
   } else {
-    LOGGER(INFO, "Received content:\n %s\n", buffer);
+    LOGGER(INFO, "Received content:\n%s\n", buffer);
   }
 
   char* response =
@@ -94,25 +91,4 @@ int server_listen(server_t* server) {
   }
 
   return err;
-}
-
-int main() {
-  int err = 0;
-  server_t server = {0};
-
-  err = server_listen(&server);
-  if (err) {
-    LOGGER(FATAL, "Failed to listen on address 0.0.0.0:%d\n", PORT);
-    return err;
-  }
-
-  while (1) {
-    err = server_accept(&server);
-    if (err) {
-      LOGGER(FATAL, "Failed accepting connection\n", "");
-      return err;
-    }
-  }
-
-  return 0;
 }
