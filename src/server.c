@@ -16,6 +16,20 @@
 #define NOSIGNAL SO_NOSIGPIPE
 #endif
 
+typedef struct headers {
+  char* accept_encoding;
+  char* connection;
+  char* host;
+  char* user_agent;
+} headers_t;
+
+typedef struct request {
+  char* path;
+  char* method;
+  headers_t headers;
+  char* body;
+} request_t;
+
 int server_accept(server_t* server) {
   int err = 0;
   int conn_fd;
