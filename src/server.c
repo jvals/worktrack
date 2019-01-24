@@ -130,9 +130,15 @@ int server_accept(server_t* server) {
   // Route the request to matching controller and action
   response_t response = route(request);
 
-  char* response_raw =
-      "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello "
-      "World!";
+  char response_raw[64];
+  // TODO: Optional headers
+  sprintf(response_raw, "HTTP/1.1 %d %s\nContent-Type: %s\nContent-Length: %d\n\n%s",
+          response.status_code,
+          response.status_message,
+          response.content_type,
+          response.content_length,
+          response.body);
+
   err = send(conn_fd, response_raw, strlen(response_raw), NOSIGNAL);
   if (err == -1) {
       LOGGER(ERROR, "send %s", strerror(errno));
