@@ -18,6 +18,8 @@ name_action_mapping_t* name_action_map;
 void init_name_action_map() {
   int idx = 0;
 
+  // The name_action map is used to name the actions. This allows us
+  // to dynamically connect routes to functions.
   name_action_map = malloc(MAX_ROUTE_ARRAY_SIZE * sizeof(name_action_mapping_t));
   name_action_map[idx].action_name = "get_total_time";
   name_action_map[idx++].action = get_total_time;
