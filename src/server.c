@@ -66,9 +66,11 @@ int server_accept(server_t* server) {
   int start_line_idx = 0;
   while ( (token = strsep(&start_line, " ")) != NULL ) {
     if (start_line_idx == 0) {
-      request.method = token;
+      LOGGER(TRACE, "token: %s\n", token);
+      request.method = strdup(token);
     } else if (start_line_idx == 1) {
-      request.path = token;
+      LOGGER(TRACE, "token: %s\n", token);
+      request.path = strdup(token);
     }
     start_line_idx++;
   }

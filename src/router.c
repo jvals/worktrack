@@ -20,7 +20,7 @@ void init_name_action_map() {
 
   // The name_action map is used to name the actions. This allows us
   // to dynamically connect routes to functions.
-  name_action_map = malloc(MAX_ROUTE_ARRAY_SIZE * sizeof(name_action_mapping_t));
+  name_action_map = calloc(MAX_ROUTE_ARRAY_SIZE, sizeof(name_action_mapping_t));
   name_action_map[idx].action_name = "get_total_time";
   name_action_map[idx++].action = get_total_time;
 
@@ -41,9 +41,15 @@ response_t route(request_t req) {
   init_name_action_map();
 
   for (int i = 0; i < MAX_ROUTE_ARRAY_SIZE; ++i) {
+    if (routes[i].name == NULL) {
+      break;
+    }
     if (strcmp(req.path, routes[i].path)==0 && strcmp(req.method, routes[i].method) == 0) {
       LOGGER(TRACE, "Found matching route!\n", "");
       for (int j = 0; j < MAX_ROUTE_ARRAY_SIZE; ++j) {
+        if  (name_action_map[j].action_name == NULL) {
+          break;
+        }
         if (strcmp(routes[i].action, name_action_map[j].action_name) == 0) {
           LOGGER(TRACE, "Found matching implmentation!\n", "");
           response_t response = name_action_map[j].action(req);

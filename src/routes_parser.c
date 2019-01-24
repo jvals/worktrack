@@ -23,7 +23,7 @@ void init_routes_from_ini() {
     LOGGER(INFO, "Reading file %s\n", ROUTES_FILE_NAME);
   }
 
-  routes = malloc(sizeof(route_t) * MAX_ROUTE_ARRAY_SIZE);
+  routes = calloc(sizeof(route_t), MAX_ROUTE_ARRAY_SIZE);
   char line[MAX_CONFIG_LINE_SIZE];
   int routes_idx = 0;
   while(fgets(line, MAX_CONFIG_LINE_SIZE, fp) != NULL ) {
