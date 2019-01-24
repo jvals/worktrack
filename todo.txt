@@ -7,7 +7,7 @@ Important
 [] optional headers
 [] Write to sqlite db
 [] two endpoints start and stop
-[]
+[] extract common responses (204, 201)
 
 Bonus
 [] string function which escapes special char codes
