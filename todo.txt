@@ -3,10 +3,10 @@ Important
 [x] Verify struct
 [x] set up testcontroller
 [x] set up routing
-[] read and parse routes.yml
+[x] read and parse routes.yml
 [] optional headers
 [] Write to sqlite db
-[] two endpoints start and stop
+[x] two endpoints start and stop
 [] extract common responses (204, 201)
 
 Bonus
