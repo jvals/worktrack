@@ -1,6 +1,6 @@
 Important
 [x] Parse request into a struct containing path, method, headers and body(?)
-[] Verify struct
+[x] Verify struct
 [] set up testcontroller
 [] set up routing
 

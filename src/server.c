@@ -127,6 +127,16 @@ int server_accept(server_t* server) {
   LOGGER(TRACE, "Parsing request body\n", "");
   LOGGER(DEBUG, "Ignoring request body\n", "");
 
+  // Verify request struct
+  if (request.path == NULL) {
+    LOGGER(DEBUG, "No path found in request, dropping request\n", "");
+    // TODO: Error handling
+  }
+
+  if (request.method == NULL) {
+    LOGGER(DEBUG, "No method found in request, dropping request\n", "");
+    // TODO: Error handling
+  }
   char* response =
       "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello "
       "World!";
