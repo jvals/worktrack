@@ -18,7 +18,7 @@ void print_colored_time_and_date(const char* color_code, const char* status,
   printf("L:%d] ", line_number);
 }
 
-void reset_color() { printf("\033%s\n", CODE_RESET); }
+void reset_color() { printf("\033%s", CODE_RESET); }
 
 void logger(enum LOG_LEVELS log_level, const char* file_name, int line_number,
             const char* string, ...) {
@@ -39,7 +39,6 @@ void logger(enum LOG_LEVELS log_level, const char* file_name, int line_number,
   } else if (log_level == INFO && LOG_LIMIT <= INFO) {
     print_colored_time_and_date(CODE_RESET, "INFO", file_name, line_number);
     vfprintf(stdout, string, arg);
-    printf("\n");
   } else if (log_level == DEBUG && LOG_LIMIT <= DEBUG) {
     print_colored_time_and_date(CODE_MAGENTA, "DEBUG", file_name, line_number);
     vfprintf(stdout, string, arg);
