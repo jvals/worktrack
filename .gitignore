@@ -5,3 +5,4 @@ bin
 
 TAGS
 server
+*.db

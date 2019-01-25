@@ -1,14 +1,14 @@
 #include <logger.h>
 
 #include "server.h"
-#include "routes_parser.h"
+#include "init.h"
 #include "cleanup.h"
 
 int main() {
   int err = 0;
   server_t server = {0};
 
-  init_routes_from_ini();
+  init();
 
   err = server_listen(&server);  // Open TCP Socket
   if (err) {
