@@ -16,8 +16,7 @@ void time_service_create_entry() {
   time_entry.fromdate = now;
   time_entry.todate = 0; // Is recorded as <null> in database
 
-  new_entry(time_entry);
-  LOGGER(INFO, "New time entry successfully created\n", "");
+  safe_new_entry(time_entry);
 }
 
 void time_service_stop_latest_entry() {
