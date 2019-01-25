@@ -4,7 +4,7 @@ Important
 [x] set up testcontroller
 [x] set up routing
 [x] read and parse routes.yml
-[] Write to sqlite db
+[x] Write to sqlite db
 [] optional headers
 [x] two endpoints start and stop
 [] extract common responses (204, 201)
