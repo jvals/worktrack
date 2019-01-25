@@ -41,6 +41,7 @@ int server_accept(server_t* server) {
   int valread = read(conn_fd, buffer, 1024);
   if (valread == 0) {
     LOGGER(DEBUG, "No bytes to read\n", "");
+    return;
   } else if (valread < 0) {
     LOGGER(ERROR, "read %s", strerror(errno));
   } else {
