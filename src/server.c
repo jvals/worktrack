@@ -132,7 +132,9 @@ int server_accept(server_t* server) {
   // Route the request to matching controller and action
   response_t response = route(request);
 
-  char response_raw[64];
+  LOGGER(TRACE, "Response body: %s\n", response.body);
+
+  char response_raw[2048];
   // TODO: Optional headers
   sprintf(response_raw, "HTTP/1.1 %d %s\nContent-Type: %s\nContent-Length: %d\n\n%s",
           response.status_code,

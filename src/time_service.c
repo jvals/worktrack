@@ -33,10 +33,12 @@ void time_service_stop_latest_entry() {
   LOGGER(INFO, "Latest entry was updated with a TODATE\n", "");
 }
 
-void time_service_get_total_of_diffs() {
+uint64_t time_service_get_total_of_diffs() {
   LOGGER(INFO, "Computing the sum of all the diffs in the time table\n", "");
 
   uint64_t total_diff = 0;
   get_total_diff(&total_diff);
   LOGGER(INFO, "Total diff successfully computed=%d\n", total_diff);
+
+  return total_diff;
 }
