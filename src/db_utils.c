@@ -1,4 +1,3 @@
-#include <sqlite3.h>
 #include <stdlib.h>
 #include <logger.h>
 
@@ -32,4 +31,8 @@ void close_db_connection() {
       LOGGER(ERROR, "Unable to close database. Transactions might be in progress\n", "");
     }
   }
+}
+
+sqlite3* getDb() {
+  return db;
 }
