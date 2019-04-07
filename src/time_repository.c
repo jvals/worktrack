@@ -67,7 +67,7 @@ void safe_new_entry(time_entry_t time_entry) {
       sqlite3_free(error);
       exit(1);
     } else {
-      LOGGER(INFO, "New time entry successfully created\n", "");
+      LOGGER(INFO, "New time entry successfully created\n", ""); // Not always true
     }
   }
 }
@@ -92,70 +92,30 @@ void patch_latest(time_entry_t time_entry) {
   }
 }
 
-uint64_t global_total = 0;
-uint64_t todate_total = 0;
-uint64_t fromdate_total = 0;
-
-int get_todate_sum_callback(void *total, int argc, char **argv, char **azColName) {
-  LOGGER(TRACE, "TODATE sum computed to %s\n", argv[0]);
+int get_total_sum_callback(void *total, int argc, char **argv, char **azColName) {
+  LOGGER(TRACE, "TODATE-FROMDATE sum computed to %s\n", argv[0]);
   if (argv[0] != NULL) {
-    todate_total = strtol(argv[0], NULL, 10);
+    *((uint64_t*)total) = strtol(argv[0], NULL, 10);
   }
   return 0;
-}
-
-int get_fromdate_sum_callback(void *total, int argc, char **argv, char **azColName) {
-  LOGGER(TRACE, "FROMDATE sum computed to %s\n", argv[0]);
-  if (argv[0] != NULL) {
-    fromdate_total = strtol(argv[0], NULL, 10);
-  }
-  return 0;
-}
-
-void get_total_fromdate() {
-  sqlite3* db = getDb();
-  if (db == NULL) {
-    LOGGER(FATAL, "Unable to get database pointer\n", "");
-    exit(1);
-  } else {
-    char sql_raw[1024];
-    sprintf(sql_raw, "SELECT SUM(FROMDATE) FROM %s", TIME_TABLE_NAME);
-    char* error = NULL;
-    int rc = sqlite3_exec(db, sql_raw, get_fromdate_sum_callback, 0, &error);
-    if (rc != SQLITE_OK) {
-      LOGGER(FATAL, "Unable to get total fromdates %s: %s\n", TIME_TABLE_NAME, error);
-      sqlite3_free(error);
-      exit(1);
-    } else {
-      LOGGER(DEBUG, "Successfully collected the sum of fromdates!\n", "");
-    }
-  }
-}
-
-void get_total_todate() {
-  sqlite3* db = getDb();
-  if (db == NULL) {
-    LOGGER(FATAL, "Unable to get database pointer\n", "");
-    exit(1);
-  } else {
-    char sql_raw[1024];
-    sprintf(sql_raw, "SELECT SUM(TODATE) FROM %s", TIME_TABLE_NAME);
-    char* error = NULL;
-    int rc = sqlite3_exec(db, sql_raw, get_todate_sum_callback, 0, &error);
-    if (rc != SQLITE_OK) {
-      LOGGER(FATAL, "Unable to get total todates %s: %s\n", TIME_TABLE_NAME, error);
-      sqlite3_free(error);
-      exit(1);
-    } else {
-      LOGGER(DEBUG, "Successfully collected the sum of todates!\n", "");
-    }
-  }
 }
 
 void get_total_diff(uint64_t *total) {
-    get_total_fromdate();
-    get_total_todate();
-    LOGGER(TRACE, "Computing diff of %d and %d\n", todate_total, fromdate_total);
-    global_total = (todate_total-fromdate_total);
-    *total = global_total;
+  sqlite3* db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+    char sql_raw[1024];
+    sprintf(sql_raw, "SELECT SUM(TODATE-FROMDATE) FROM %s", TIME_TABLE_NAME);
+    char* error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, get_total_sum_callback, total, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to get total %s: %s\n", TIME_TABLE_NAME, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully collected the total time spent!\n", "");
+    }
+  }
 }
