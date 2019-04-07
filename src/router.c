@@ -58,6 +58,7 @@ response_t route(request_t req) {
         if (strcmp(routes[i].action, name_action_map[j].action_name) == 0) {
           LOGGER(TRACE, "Found matching implmentation!\n", "");
           response_t response = name_action_map[j].action(req);
+          deinit_name_action_map();
           return response;
         }
       }
@@ -66,7 +67,7 @@ response_t route(request_t req) {
     }
   }
 
-  deinit_routes();
+  deinit_name_action_map();
 
   // Respond with 404
   LOGGER(DEBUG, "No matching route found\n", "");
