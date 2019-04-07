@@ -39,48 +39,8 @@ void create_time_table() {
   }
 }
 
-bool check_last_entry_callback_was_executed = false;
-int check_last_entry_callback(void *time_entry, int argc, char **argv, char **azColName) {
-  check_last_entry_callback_was_executed = true;
-  if (argv[0] == NULL) {
-    LOGGER(TRACE, "TODATE in last entry in table %s was null\n", TIME_TABLE_NAME);
-  } else {
-    LOGGER(TRACE, "TODATE in last entry in table %s was %s\n", TIME_TABLE_NAME, argv[0]);
-    new_entry(*((time_entry_t*)time_entry));
-  }
-
-  return 0;
-}
-
-void check_last_entry(time_entry_t time_entry) {
-  sqlite3* db = getDb();
-  if (db == NULL) {
-    LOGGER(FATAL, "Unable to get database pointer\n", "");
-    exit(1);
-  } else {
-    char sql_raw[1024];
-    sprintf(sql_raw, "SELECT todate from %s ORDER BY id DESC LIMIT 1;", TIME_TABLE_NAME);
-    char* error = NULL;
-    int rc = sqlite3_exec(db, sql_raw, check_last_entry_callback, (void*)&time_entry, &error);
-    if (rc != SQLITE_OK) {
-      LOGGER(FATAL, "Unable to fetch last entry from table &s: %s\n", TIME_TABLE_NAME, error);
-      sqlite3_free(error);
-      exit(1);
-    } else {
-      if (!check_last_entry_callback_was_executed) {
-        new_entry(time_entry);
-      }
-      LOGGER(DEBUG, "Last entry was fetched!\n", "");
-    }
-  }
-}
-
 // Make sure that the most recent entry has todate!=null before creating a new entry
 void safe_new_entry(time_entry_t time_entry) {
-  check_last_entry(time_entry); // Calls new_entry in a callback if it's safe
-}
-
-void new_entry(time_entry_t time_entry) {
   sqlite3* db = getDb();
   if (db == NULL) {
     LOGGER(FATAL, "Unable to get database pointer\n", "");
@@ -88,9 +48,16 @@ void new_entry(time_entry_t time_entry) {
   } else {
     char sql_raw[1024];
     if (time_entry.todate == 0) {
-      sprintf(sql_raw, "INSERT INTO %s (FROMDATE) VALUES (%d);", TIME_TABLE_NAME, time_entry.fromdate);
+      sprintf(sql_raw,
+              "INSERT INTO %s (FROMDATE) SELECT %d WHERE (SELECT todate from time ORDER BY id DESC LIMIT 1) IS NOT NULL;",
+              TIME_TABLE_NAME,
+              time_entry.fromdate);
     } else {
-      sprintf(sql_raw, "INSERT INTO %s (FROMDATE, TODATE) VALUES (%d, %d);", TIME_TABLE_NAME, time_entry.fromdate, time_entry.todate);
+      sprintf(sql_raw,
+              "INSERT INTO %s (FROMDATE, TODATE) SELECT %d, %d WHERE (SELECT todate from time ORDER BY id DESC LIMIT 1) IS NOT NULL;",
+              TIME_TABLE_NAME,
+              time_entry.fromdate,
+              time_entry.todate);
     }
 
     char* error = NULL;
@@ -100,7 +67,6 @@ void new_entry(time_entry_t time_entry) {
       sqlite3_free(error);
       exit(1);
     } else {
-      LOGGER(DEBUG, "Time entry was created!\n", "");
       LOGGER(INFO, "New time entry successfully created\n", "");
     }
   }
