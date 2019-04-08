@@ -15,7 +15,7 @@ typedef struct name_action_mapping {
 
 name_action_mapping_t* name_action_map;
 
-void init_name_action_map() {
+static void init_name_action_map() {
   int idx = 0;
 
   // The name_action map is used to name the actions. This allows us

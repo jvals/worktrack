@@ -10,7 +10,7 @@
 
 #define TIME_TABLE_NAME "time"
 
-int time_callback(void *NotUsed, int argc, char **argv, char **azColName) {
+static int time_callback(void *NotUsed, int argc, char **argv, char **azColName) {
   for (int i = 0; i < argc; ++i) {
     LOGGER(TRACE, "%s = %s", azColName[i], argv[i] ? argv[i] : "NULL");
   }
@@ -92,7 +92,7 @@ void patch_latest(time_entry_t time_entry) {
   }
 }
 
-int get_total_sum_callback(void *total, int argc, char **argv, char **azColName) {
+static int get_total_sum_callback(void *total, int argc, char **argv, char **azColName) {
   LOGGER(TRACE, "TODATE-FROMDATE sum computed to %s\n", argv[0]);
   if (argv[0] != NULL) {
     *((uint64_t*)total) = strtol(argv[0], NULL, 10);
