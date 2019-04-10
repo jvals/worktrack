@@ -1,4 +1,6 @@
 Important
+[] Unit Testing
+[] E2E Testing
 [x] Parse request into a struct containing path, method, headers and body(?)
 [x] Verify struct
 [x] set up testcontroller
