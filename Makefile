@@ -21,10 +21,13 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-.PHONY: clean purge
+.PHONY: clean purge run
 
 clean:
 	rm -rf $(TARGET)
 
 purge: clean
 	rm -rf $(OBJDIR)
+
+run: $(TARGET)
+	./$<
