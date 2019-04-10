@@ -11,6 +11,7 @@
 #include "request.h"
 #include "response.h"
 #include "router.h"
+#include "error_codes.h"
 
 #define BACKLOG 4
 
@@ -41,7 +42,7 @@ int server_accept(server_t* server) {
   int valread = read(conn_fd, buffer, 1024);
   if (valread == 0) {
     LOGGER(DEBUG, "No bytes to read\n", "");
-    return 1;
+    return MALFORMED_REQUEST;
   } else if (valread < 0) {
     LOGGER(ERROR, "read %s", strerror(errno));
   } else {
@@ -58,7 +59,7 @@ int server_accept(server_t* server) {
   char* start_line = strsep(&request_raw, "\n");
   if (start_line == NULL) {
     LOGGER(DEBUG, "Start line was NULL\n", "");
-    // TODO: Error handling
+    return MALFORMED_REQUEST;
   }
 
   LOGGER(TRACE, "Parsing start_line: %s\n", start_line);
@@ -102,7 +103,7 @@ int server_accept(server_t* server) {
         free(header_value);
       } else {
         LOGGER(DEBUG, "Malformed headers, dropping request", "");
-        // TODO: Error handling
+        return MALFORMED_REQUEST;
       }
     }
 
@@ -122,12 +123,12 @@ int server_accept(server_t* server) {
   // Verify request struct
   if (request.path == NULL) {
     LOGGER(DEBUG, "No path found in request, dropping request\n", "");
-    // TODO: Error handling
+    return MALFORMED_REQUEST;
   }
 
   if (request.method == NULL) {
     LOGGER(DEBUG, "No method found in request, dropping request\n", "");
-    // TODO: Error handling
+    return MALFORMED_REQUEST;
   }
 
   // Route the request to matching controller and action
