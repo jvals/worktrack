@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <logger.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 #include "server.h"
 #include "request.h"
@@ -26,11 +27,15 @@ int server_accept(server_t* server) {
   int conn_fd;
   socklen_t client_len;
   struct sockaddr_in client_addr;
-
+  int flags = fcntl(server->listen_fd, F_GETFL);
+  fcntl(server->listen_fd, F_SETFL, flags | O_NONBLOCK);
   client_len = sizeof(client_addr);
   err = (conn_fd = accept(server->listen_fd, (struct sockaddr*)&client_addr,
                           &client_len));
-  if (err == -1) {
+  //https://jameshfisher.com/2017/04/05/set_socket_nonblocking/
+  if (errno == EWOULDBLOCK) {
+
+  } else if (err == -1) {
     LOGGER(FATAL, "accept %s", strerror(errno));
     LOGGER(FATAL, "failed accepting connection\n", "");
     return err;
