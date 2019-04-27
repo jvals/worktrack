@@ -24,10 +24,10 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 .PHONY: clean purge run
 
 clean:
-	rm -rf $(TARGET)
+	rm -rfv $(TARGET)
 
 purge: clean
-	rm -rf $(OBJDIR)
+	rm -rfv $(OBJDIR)
 
 run: $(TARGET)
 	./$<

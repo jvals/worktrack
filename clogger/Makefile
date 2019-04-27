@@ -6,7 +6,7 @@ liblogger.a: logger.o
 .PHONY: clean purge
 
 clean:
-	rm -rf *.o
+	rm -rfv *.o
 
 purge: clean
-	rm -rf *.a
+	rm -rfv *.a
