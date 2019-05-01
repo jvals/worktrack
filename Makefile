@@ -1,5 +1,5 @@
-CC := gcc
-LD := gcc
+CC := gcc-8
+LD := gcc-8
 
 INCLUDES := -Iclogger
 LIBS := -Lclogger
@@ -18,7 +18,7 @@ $(TARGET): $(OBJ_FILES)
 	$(LD) -o $@ $^ $(LDFLAGS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@mkdir -p $(@D)
+	@mkdir -pv $(@D)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 .PHONY: clean purge run
@@ -31,3 +31,22 @@ purge: clean
 
 run: $(TARGET)
 	./$<
+
+
+# CMOCKA
+MOCKS=safe_new_entry # list of function signature to mock
+TEST_LDFLAGS+=$(foreach MOCK,$(MOCKS),-Wl,--wrap=$(MOCK))
+TEST_LDFLAGS+=-lcmocka
+
+TESTDIR := test
+TEST_SRC_FILES := $(wildcard $(TESTDIR)/*.c)
+TEST_OBJ_FILES := $(patsubst $(TESTDIR)/%.c, $(OBJDIR)/%.o, $(TEST_SRC_FILES))
+
+TEST_TARGET = test_runner
+
+$(TEST_TARGET): $(TEST_OBJ_FILES) $(OBJ_FILES)
+	$(LD) -o $@ $^ $(LDFLAGS) $(TEST_LDFLAGS)
+
+$(OBJDIR)/%.o: $(TESTDIR)/%.c
+	@mkdir -pv $(@D)
+	$(CC) $(CFLAGS) -c -o $@ $<
