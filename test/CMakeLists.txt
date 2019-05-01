@@ -5,6 +5,9 @@ project (worktrack-test C)
 # Find cmocka
 FIND_LIBRARY(CMOCKA_LIBRARY cmocka)
 
+# Enable testing
+enable_testing()
+
 # List of tests and their flags
 LIST(APPEND tests_names "test_time_service")
 LIST(APPEND tests_flags "-Wl,--wrap,safe_new_entry")
@@ -29,4 +32,3 @@ FOREACH(i RANGE ${count})
     ENDIF()
     ADD_TEST(${test_name} ${test_name})
 ENDFOREACH()
-
