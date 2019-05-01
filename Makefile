@@ -1,5 +1,5 @@
-CC := gcc-8
-LD := gcc-8
+CC := gcc
+LD := gcc
 
 INCLUDES := -Iclogger
 LIBS := -Lclogger
