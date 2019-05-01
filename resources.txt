@@ -1,1 +1,12 @@
 https://www.sqlite.org/lang_insert.html
+
+TESTING
+https://github.com/aleksandar-todorovic/awesome-c#testing
+
+MUNIT
+https://nemequ.github.io/munit/
+
+CMOCKA
+https://bysany.net/20160403/
+https://blog.microjoe.org/2017/unit-tests-c-cmocka-coverage-cmake.html
+https://cmocka.org/
