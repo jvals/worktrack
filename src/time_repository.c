@@ -94,7 +94,7 @@ void patch_latest(time_entry_t time_entry) {
 
 static int get_total_sum_callback(void *total, int argc, char **argv, char **azColName) {
   LOGGER(TRACE, "TODATE-FROMDATE sum computed to %s\n", argv[0]);
-  if (argv[0] != NULL) {
+  if (argv[0] != NULL) { // argv[0] is 0x0 if the time table is empty
     *((uint64_t*)total) = strtol(argv[0], NULL, 10);
   }
   return 0;
