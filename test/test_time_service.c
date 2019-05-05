@@ -17,8 +17,12 @@ void test_time_service_create_entry(void **state) {
   time_service_create_entry();
 }
 
-void test_time_service_stop_latest_entry() {
+void test_time_service_stop_latest_entry(void **state) {
+  time_t now = time(NULL);
+  time_entry_t time_entry_now = {.fromdate = 0, .todate = now};
+  expect_memory(__wrap_patch_latest, &time_entry, &time_entry_now, sizeof(time_entry_t));
 
+  time_service_stop_latest_entry();
 }
 
 void test_time_service_get_total_of_diffs() {
@@ -31,6 +35,7 @@ void __wrap_safe_new_entry(time_entry_t time_entry) {
 }
 
 void __wrap_patch_latest(time_entry_t time_entry) {
+  check_expected(&time_entry);
   return;
 }
 
@@ -63,7 +68,8 @@ time_t __wrap_time(time_t *tloc) {
 int  main() {
 
   const struct CMUnitTest tests[] = {
-                                     cmocka_unit_test(test_time_service_create_entry)
+                                     cmocka_unit_test(test_time_service_create_entry),
+                                     cmocka_unit_test(test_time_service_stop_latest_entry)
   };
   return cmocka_run_group_tests(tests, NULL, NULL);
 
