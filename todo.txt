@@ -11,13 +11,14 @@ Important
 [x] two endpoints start and stop
 [] extract common responses (204, 201)
 [] ini file parser in python which produces compilable C
+[] turn of logger during tests
 
 Bonus
 [] return codes on all functions and to bubble errors up to an error handler
 [] string function which escapes special char codes
 [] Catch sigint and close server
 [x] Logging function with log-level, colors and variable length parameters (for strings)
-[x] split out logger
+[ ] split out logger
 [x] gitignore
 [x] makefile
 [] readme
