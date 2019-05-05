@@ -10,3 +10,6 @@ CMOCKA
 https://bysany.net/20160403/
 https://blog.microjoe.org/2017/unit-tests-c-cmocka-coverage-cmake.html
 https://cmocka.org/
+
+CTEST
+https://gitlab.kitware.com/cmake/community/wikis/doc/ctest/Testing-With-CTest
