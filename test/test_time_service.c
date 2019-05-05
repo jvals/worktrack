@@ -66,16 +66,11 @@ time_t __wrap_time(time_t *tloc) {
 }
 
 int  main() {
-
   const struct CMUnitTest tests[] = {
                                      cmocka_unit_test(test_time_service_create_entry),
                                      cmocka_unit_test(test_time_service_stop_latest_entry)
   };
   return cmocka_run_group_tests(tests, NULL, NULL);
-
-  // test_time_service_create_entry();
-  // test_time_service_stop_latest_entry();
-  // test_time_service_get_total_of_diffs();
 
   return 0;
 }
