@@ -32,12 +32,14 @@ purge: clean
 run: $(TARGET)
 	./$<
 
-TEST_BINARIES = test_time_service_runner
+
+# Test specific rules
+TEST_BINARIES = test_time_service_runner test_db_utils_runner
 EXEC_TEST_BINARIES = $(foreach TEST_BINARY, $(TEST_BINARIES), ./$(TEST_BINARY); )
 test: $(TEST_BINARIES)
 	$(EXEC_TEST_BINARIES)
 
-MOCKS=safe_new_entry time patch_latest get_total_diff logger # list of function signature to mock
+MOCKS=safe_new_entry time patch_latest get_total_diff logger sqlite3_open # list of function signature to mock
 TEST_LDFLAGS+=$(foreach MOCK,$(MOCKS),-Wl,--wrap=$(MOCK))
 TEST_LDFLAGS+=-lcmocka
 

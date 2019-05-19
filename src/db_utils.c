@@ -3,8 +3,6 @@
 
 #include "db_utils.h"
 
-#define DATABASE_FILE_NAME "test.db"
-
 sqlite3 *db = NULL;
 
 int open_db_connection() {
