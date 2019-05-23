@@ -49,12 +49,12 @@ void safe_new_entry(time_entry_t time_entry) {
     char sql_raw[1024];
     if (time_entry.todate == 0) {
       sprintf(sql_raw,
-              "INSERT INTO %s (FROMDATE) SELECT %d WHERE (SELECT todate from time ORDER BY id DESC LIMIT 1) IS NOT NULL;",
+              "INSERT INTO %s (FROMDATE) SELECT %d WHERE (SELECT 1 from time limit 1) IS NULL OR (SELECT todate from time ORDER BY id DESC LIMIT 1) IS NOT NULL;",
               TIME_TABLE_NAME,
               time_entry.fromdate);
     } else {
       sprintf(sql_raw,
-              "INSERT INTO %s (FROMDATE, TODATE) SELECT %d, %d WHERE (SELECT todate from time ORDER BY id DESC LIMIT 1) IS NOT NULL;",
+              "INSERT INTO %s (FROMDATE, TODATE) SELECT %d, %d WHERE (SELECT 1 from time limit 1) IS NULL OR (SELECT todate from time ORDER BY id DESC LIMIT 1) IS NOT NULL;",
               TIME_TABLE_NAME,
               time_entry.fromdate,
               time_entry.todate);
