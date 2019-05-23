@@ -119,3 +119,31 @@ void get_total_diff(uint64_t *total) {
     }
   }
 }
+
+static int get_todays_sum_callback(void *total, int argc, char **argv, char **azColName) {
+  LOGGER(TRACE, "Todays time computed to %s\n", argv[0]);
+  if (argv[0] != NULL) { // argv[0] is 0x0 if the time table is empty
+    *((uint64_t*)total) = strtol(argv[0], NULL, 10);
+  }
+  return 0;
+}
+
+void get_todays_diff(uint64_t *total) {
+  sqlite3* db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+    char sql_raw[1024];
+    sprintf(sql_raw, "SELECT SUM(TODATE-FROMDATE) FROM %s where fromdate >= strftime('%%s', 'now', 'start of day', 'localtime') and todate >= strftime('%%s', 'now', 'start of day', 'localtime')", TIME_TABLE_NAME);
+    char* error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, get_todays_sum_callback, total, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to get total %s: %s\n", TIME_TABLE_NAME, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully collected todays time spent!\n", "");
+    }
+  }
+}

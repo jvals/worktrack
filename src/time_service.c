@@ -42,3 +42,13 @@ uint64_t time_service_get_total_of_diffs() {
 
   return total_diff;
 }
+
+uint64_t time_service_get_todays_diff() {
+  LOGGER(INFO, "Computing the sum of todays diffs in the time table\n", "");
+
+  uint64_t todays_diff = 0;
+  get_todays_diff(&todays_diff);
+  LOGGER(INFO, "Todays diff successfully computed=%d\n", todays_diff);
+
+  return todays_diff;
+}

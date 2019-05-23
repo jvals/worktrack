@@ -50,3 +50,20 @@ response_t stop_time(request_t req) {
 
   return response;
 }
+
+response_t get_todays_time(request_t req) {
+  response_t response;
+
+  uint64_t todays_diff = 0;
+  todays_diff = time_service_get_todays_diff();
+  char http_body[128];
+  sprintf(http_body, "%lld", todays_diff);
+
+  response.status_code = 200;
+  response.status_message = "OK";
+  response.content_length = 1024;
+  response.content_type = "text/plain";
+  response.body = strdup(http_body);
+
+  return response;
+}

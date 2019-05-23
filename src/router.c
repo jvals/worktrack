@@ -30,6 +30,9 @@ static void init_name_action_map() {
 
   name_action_map[idx].action_name = "stop_time";
   name_action_map[idx++].action = stop_time;
+
+  name_action_map[idx].action_name = "get_todays_time";
+  name_action_map[idx++].action = get_todays_time;
 }
 
 void deinit_name_action_map() {
