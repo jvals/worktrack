@@ -135,7 +135,7 @@ void get_todays_diff(uint64_t *total) {
     exit(1);
   } else {
     char sql_raw[1024];
-    sprintf(sql_raw, "SELECT SUM(TODATE-FROMDATE) FROM %s where fromdate >= strftime('%%s', 'now', 'start of day', 'localtime') and todate >= strftime('%%s', 'now', 'start of day', 'localtime')", TIME_TABLE_NAME);
+    sprintf(sql_raw, "SELECT SUM(TODATE-FROMDATE) FROM %s where fromdate >= strftime('%%s', 'now', 'start of day') and todate >= strftime('%%s', 'now', 'start of day')", TIME_TABLE_NAME);
     char* error = NULL;
     int rc = sqlite3_exec(db, sql_raw, get_todays_sum_callback, total, &error);
     if (rc != SQLITE_OK) {
