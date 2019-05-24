@@ -50,5 +50,9 @@ uint64_t time_service_get_todays_diff() {
   get_todays_diff(&todays_diff);
   LOGGER(INFO, "Todays diff successfully computed=%d\n", todays_diff);
 
-  return todays_diff;
+  uint64_t todays_unfinished_work = 0;
+  get_todays_unfinished_work(&todays_unfinished_work);
+  LOGGER(INFO, "Todays unfinished work successfully computed=%d\n", todays_unfinished_work);
+
+  return todays_diff + todays_unfinished_work;
 }

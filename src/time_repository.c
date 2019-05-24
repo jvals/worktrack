@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <time.h>
+#include <inttypes.h>
 
 #include "time_entry_t.h"
 #include "db_utils.h"
@@ -144,6 +146,35 @@ void get_todays_diff(uint64_t *total) {
       exit(1);
     } else {
       LOGGER(DEBUG, "Successfully collected todays time spent!\n", "");
+    }
+  }
+}
+
+static int get_todays_unfinished_work_callback(void *total, int argc, char **argv, char **azColName) {
+  if (argc >= 2 && argv[0] != NULL && argv[1] == NULL) {
+    time_t now;
+    time(&now);
+    *((uint64_t*)total) = ((uint64_t)now - strtol(argv[0], NULL, 10));
+  }
+  return 0;
+}
+
+void get_todays_unfinished_work(uint64_t *total) {
+  sqlite3* db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+    char sql_raw[1024];
+    sprintf(sql_raw, "SELECT FROMDATE, TODATE from %s where fromdate >= strftime('%%s', 'now', 'start of day') order by id desc limit 1", TIME_TABLE_NAME);
+    char* error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, get_todays_unfinished_work_callback, total, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to get total %s: %s\n", TIME_TABLE_NAME, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully collected todays unfinished time!\n", "");
     }
   }
 }
