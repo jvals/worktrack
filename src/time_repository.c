@@ -178,3 +178,30 @@ void get_todays_unfinished_work(uint64_t *total) {
     }
   }
 }
+
+static int get_unique_dates_callback(void *count, int argc, char **argv, char **azColName) {
+  if (argc >= 0) {
+    *((uint64_t*)count) = strtol(argv[0], NULL, 10);
+  }
+  return 0;
+}
+
+void get_unique_dates(uint64_t *count) {
+  sqlite3* db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+    char sql_raw[1024];
+    sprintf(sql_raw, "SELECT COUNT(DISTINCT DATE(fromdate, 'unixepoch')) from %s;", TIME_TABLE_NAME);
+    char* error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, get_unique_dates_callback, count, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to get unique dates %s: %s\n", TIME_TABLE_NAME, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully collected unique dates!\n", "");
+    }
+  }
+}

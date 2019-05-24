@@ -56,3 +56,19 @@ uint64_t time_service_get_todays_diff() {
 
   return todays_diff + todays_unfinished_work;
 }
+
+uint64_t time_service_get_overtime() {
+  LOGGER(INFO, "Computing total overtime\n", "");
+
+  uint64_t total_diff = time_service_get_total_of_diffs();
+
+  uint64_t unique_days = 0;
+  get_unique_dates(&unique_days);
+
+  if (unique_days != 0) {
+    return total_diff  - (unique_days * 27000); // 27000 = 7.5 * 60 * 60
+  } else {
+    LOGGER(INFO, "No workdays in database!\n", "");
+    return 0;
+  }
+}

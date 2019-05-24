@@ -67,3 +67,20 @@ response_t get_todays_time(request_t req) {
 
   return response;
 }
+
+response_t get_overtime(request_t req) {
+  response_t response;
+
+  uint64_t overtime = 0;
+  overtime = time_service_get_overtime();
+  char http_body[128];
+  sprintf(http_body, "%lld", overtime);
+
+  response.status_code = 200;
+  response.status_message = "OK";
+  response.content_length = 1024;
+  response.content_type = "text/plain";
+  response.body = strdup(http_body);
+
+  return response;
+}
