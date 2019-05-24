@@ -84,3 +84,21 @@ response_t get_overtime(request_t req) {
 
   return response;
 }
+
+
+response_t get_work_in_progress(request_t req) {
+  response_t response;
+
+  bool work_in_progress = false;
+  work_in_progress = time_service_unfinished_work();
+  char http_body[128];
+  sprintf(http_body, "%s", work_in_progress ? "true" : "false");
+
+  response.status_code = 200;
+  response.status_message = "OK";
+  response.content_length = 1024;
+  response.content_type = "text/plain";
+  response.body = strdup(http_body);
+
+  return response;
+}

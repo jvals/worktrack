@@ -36,6 +36,9 @@ static void init_name_action_map() {
 
   name_action_map[idx].action_name = "get_overtime";
   name_action_map[idx++].action = get_overtime;
+
+  name_action_map[idx].action_name = "get_work_in_progress";
+  name_action_map[idx++].action = get_work_in_progress;
 }
 
 void deinit_name_action_map() {
