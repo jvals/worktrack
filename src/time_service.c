@@ -1,9 +1,11 @@
 #include <logger.h>
 #include <time.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "time_entry_t.h"
 #include "time_repository.h"
+#include "time_service.h"
 
 void time_service_create_entry() {
   LOGGER(INFO, "Creating new time entry\n", "");
@@ -65,10 +67,24 @@ uint64_t time_service_get_overtime() {
   uint64_t unique_days = 0;
   get_unique_dates(&unique_days);
 
-  if (unique_days != 0) {
+  bool any_unfinished_work = time_service_unfinished_work();
+  if (any_unfinished_work) {
+    unique_days--; // Remove active workday
+  }
+
+  if (unique_days > 0) {
     return total_diff  - (unique_days * 27000); // 27000 = 7.5 * 60 * 60
   } else {
     LOGGER(INFO, "No workdays in database!\n", "");
     return 0;
   }
+}
+
+bool time_service_unfinished_work() {
+  LOGGER(INFO, "Checking if there are null values in the todate column of the time table", "");
+
+  bool any_unfinished_work = false;
+  check_unfinished_work(&any_unfinished_work);
+
+  return any_unfinished_work;
 }

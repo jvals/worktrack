@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 #include "time_entry_t.h"
 #include "db_utils.h"
@@ -181,6 +182,7 @@ void get_todays_unfinished_work(uint64_t *total) {
 
 static int get_unique_dates_callback(void *count, int argc, char **argv, char **azColName) {
   if (argc >= 0) {
+    LOGGER(INFO, "Unique dates in time table: %s\n", argv[0]);
     *((uint64_t*)count) = strtol(argv[0], NULL, 10);
   }
   return 0;
@@ -202,6 +204,34 @@ void get_unique_dates(uint64_t *count) {
       exit(1);
     } else {
       LOGGER(DEBUG, "Successfully collected unique dates!\n", "");
+    }
+  }
+}
+
+static int check_unfinished_work_callback(void *unfinished_work, int argc, char **argv, char **azColName) {
+  if (argc >= 0) {
+    LOGGER(INFO, "Number of rows where todate is NULL: %s\n", argv[0]);
+    *((bool*)unfinished_work) = (strtol(argv[0], NULL, 10) > 0);
+  }
+  return 0;
+}
+
+void check_unfinished_work(bool *unfinished_work) {
+  sqlite3* db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+    char sql_raw[1024];
+    sprintf(sql_raw, "SELECT COUNT(*) FROM %s WHERE todate IS NULL", TIME_TABLE_NAME);
+    char* error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, check_unfinished_work_callback, unfinished_work, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to check unfinished work %s: %s\n", TIME_TABLE_NAME, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully checked unfinished work!\n", "");
     }
   }
 }
