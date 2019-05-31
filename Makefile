@@ -5,7 +5,7 @@ INCLUDES := -Iclogger
 LIBS := -Lclogger
 
 CFLAGS += -O3 -Wall -Wextra -Wpedantic -march=native -std=gnu11 -D LOG_INFO $(INCLUDES)
-LDFLAGS := $(LIBS) -llogger -lsqlite3
+LDFLAGS += $(LIBS) -llogger -lsqlite3
 TARGET := server
 
 SRCDIR := src
