@@ -1,14 +1,23 @@
 #include <logger.h>
+#include <signal.h>
+#include <stdlib.h>
 
 #include "server.h"
 #include "init.h"
 #include "cleanup.h"
+
+void handle_sigint(int sig) {
+  cleanup();
+  exit(0);
+}
 
 int main() {
   int err = 0;
   server_t server = {0};
 
   init();
+
+  signal(SIGINT, handle_sigint);
 
   err = server_listen(&server);  // Open TCP Socket
   if (err) {
