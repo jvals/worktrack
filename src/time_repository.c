@@ -82,7 +82,7 @@ void patch_latest(time_entry_t time_entry) {
     exit(1);
   } else {
     char sql_raw[1024];
-    sprintf(sql_raw, "UPDATE %s SET TODATE=%d ORDER BY id DESC LIMIT 1;", TIME_TABLE_NAME, time_entry.todate);
+    sprintf(sql_raw, "UPDATE %1$s SET TODATE=%2$d WHERE id=(SELECT MAX(id) FROM %1$s);", TIME_TABLE_NAME, time_entry.todate);
     char* error = NULL;
     int rc = sqlite3_exec(db, sql_raw, time_callback, 0, &error);
     if (rc != SQLITE_OK) {
