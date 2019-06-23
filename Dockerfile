@@ -12,8 +12,11 @@ WORKDIR /usr/src/worktrack/clogger
 RUN ["make"]
 WORKDIR /usr/src/worktrack
 RUN ["make"]
+#RUN echo "nobody:x:65534:65534:Nobody:/:" > /etc/passwd
 
 FROM scratch
 COPY --from=build /usr/src/worktrack/server .
 COPY --from=build /usr/src/worktrack/routes.ini .
+#COPY --from=build /etc/passwd /etc/passwd
+#USER nobody
 CMD ["./server"]
