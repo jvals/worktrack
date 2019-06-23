@@ -11,7 +11,7 @@ int open_db_connection() {
   rc = sqlite3_open(DATABASE_FILE_NAME, &db);
 
   if (rc) {
-    LOGGER(FATAL, "Could not open database: %s\n", sqlite3_errmsg(db));
+    LOGGER(FATAL, "Could not open database %s: %s\n", DATABASE_FILE_NAME, sqlite3_errmsg(db));
     return 1;
   } else {
     LOGGER(INFO, "Database with name %s was successfully opened\n", DATABASE_FILE_NAME);
