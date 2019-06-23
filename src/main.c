@@ -1,6 +1,7 @@
 #include <logger.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "server.h"
 #include "init.h"
@@ -16,6 +17,7 @@ int main() {
   server_t server = {0};
 
   init();
+  setvbuf(stdout, NULL, _IONBF, 0); // Always flush stdout
 
   signal(SIGINT, handle_sigint);
 
