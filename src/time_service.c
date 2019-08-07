@@ -62,6 +62,8 @@ uint64_t time_service_get_todays_diff() {
 uint64_t time_service_get_overtime() {
   LOGGER(INFO, "Computing total overtime\n", "");
 
+  // BUG: This number is too large if we are ignoring the current work day,
+  // as the current work day can have multiple finished entries and one unfinished entry.
   uint64_t total_diff = time_service_get_total_of_diffs();
 
   uint64_t unique_days = 0;
