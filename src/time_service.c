@@ -81,7 +81,7 @@ uint64_t time_service_get_overtime() {
 }
 
 bool time_service_unfinished_work() {
-  LOGGER(INFO, "Checking if there are null values in the todate column of the time table", "");
+  LOGGER(INFO, "Checking if there are null values in the todate column of the time table\n", "");
 
   bool any_unfinished_work = false;
   check_unfinished_work(&any_unfinished_work);
