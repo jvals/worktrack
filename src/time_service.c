@@ -62,24 +62,13 @@ uint64_t time_service_get_todays_diff() {
 uint64_t time_service_get_overtime() {
   LOGGER(INFO, "Computing total overtime\n", "");
 
-  // BUG: This number is too large if we are ignoring the current work day,
-  // as the current work day can have multiple finished entries and one unfinished entry.
-  uint64_t total_diff = time_service_get_total_of_diffs();
+  uint64_t unique_days_without_today = 0;
+  get_unique_dates_without_today(&unique_days_without_today);
 
-  uint64_t unique_days = 0;
-  get_unique_dates(&unique_days);
+  uint64_t total_diff_without_today = 0;
+  get_total_diff_without_today(&total_diff_without_today);
 
-  bool any_unfinished_work = time_service_unfinished_work();
-  if (any_unfinished_work) {
-    unique_days--; // Remove active workday
-  }
-
-  if (unique_days > 0) {
-    return total_diff  - (unique_days * 27000); // 27000 = 7.5 * 60 * 60
-  } else {
-    LOGGER(INFO, "No workdays in database!\n", "");
-    return 0;
-  }
+  return total_diff_without_today - (unique_days_without_today * 27000); // 27000 = 7.5 * 60 * 60
 }
 
 bool time_service_unfinished_work() {

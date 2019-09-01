@@ -235,3 +235,43 @@ void check_unfinished_work(bool *unfinished_work) {
     }
   }
 }
+
+void get_unique_dates_without_today(uint64_t *count) {
+  sqlite3* db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+    char sql_raw[1024];
+    sprintf(sql_raw, "SELECT COUNT(DISTINCT DATE(fromdate, 'unixepoch')) from %s where fromdate < strftime('%%s', 'now', 'start of day')", TIME_TABLE_NAME);
+    char* error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, get_unique_dates_callback, count, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to get unique dates %s: %s\n", TIME_TABLE_NAME, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully collected unique dates!\n", "");
+    }
+  }
+}
+
+void get_total_diff_without_today (uint64_t *total) {
+  sqlite3* db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+    char sql_raw[1024];
+    sprintf(sql_raw, "SELECT SUM(TODATE-FROMDATE) FROM %s where fromdate < strftime('%%s', 'now', 'start of day')", TIME_TABLE_NAME);
+    char* error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, get_total_sum_callback, total, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to get total %s: %s\n", TIME_TABLE_NAME, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully collected the total time spent!\n", "");
+    }
+  }
+}

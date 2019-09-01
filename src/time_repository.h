@@ -14,3 +14,5 @@ void get_todays_diff(uint64_t *total);
 void get_todays_unfinished_work(uint64_t *total);
 void get_unique_dates(uint64_t *count);
 void check_unfinished_work(bool*);
+void get_unique_dates_without_today(uint64_t *count);
+void get_total_diff_without_today (uint64_t *total);
