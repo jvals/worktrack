@@ -138,11 +138,12 @@ int server_accept(server_t* server) {
 
   char response_raw[2048];
   // TODO: Optional headers
-  sprintf(response_raw, "HTTP/1.1 %d %s\nContent-Type: %s\nContent-Length: %d\nAccess-Control-Allow-Origin: *\n\n%s",
+  sprintf(response_raw, "HTTP/1.1 %d %s\nContent-Type: %s\nContent-Length: %d\nLocation: %s\nAccess-Control-Allow-Origin: *\n\n%s",
           response.status_code,
           response.status_message,
           response.content_type,
           response.content_length,
+          response.location,
           response.body);
 
   err = send(conn_fd, response_raw, strlen(response_raw), NOSIGNAL);

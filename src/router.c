@@ -5,6 +5,7 @@
 #include "route.h"
 #include "router.h"
 #include "time_controller.h"
+#include "dashboard_controller.h"
 #include "routes_parser.h"
 
 
@@ -39,6 +40,12 @@ static void init_name_action_map() {
 
   name_action_map[idx].action_name = "get_work_in_progress";
   name_action_map[idx++].action = get_work_in_progress;
+
+  name_action_map[idx].action_name = "get_dashboard";
+  name_action_map[idx++].action = get_dashboard;
+
+  name_action_map[idx].action_name = "post_dashboard";
+  name_action_map[idx++].action = post_dashboard;
 }
 
 void deinit_name_action_map() {
