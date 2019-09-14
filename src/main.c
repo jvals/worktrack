@@ -7,7 +7,10 @@
 #include "init.h"
 #include "cleanup.h"
 
+#define UNUSED(x) (void)(x)
+
 void handle_sigint(int sig) {
+  UNUSED(sig);
   cleanup();
   exit(0);
 }

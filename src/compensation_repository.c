@@ -8,8 +8,10 @@
 #include "compensation_entry_t.h"
 
 #define COMPENSATION_TABLE_NAME "compensation"
+#define UNUSED(x) (void)(x)
 
 static int create_compensation_table_callback(void *NotUsed, int argc, char **argv, char **azColName) {
+  UNUSED(NotUsed);
   for (int i = 0; i < argc; ++i) {
     LOGGER(TRACE, "%s = %s", azColName[i], argv[i] ? argv[i] : "NULL");
   }
@@ -39,6 +41,7 @@ void create_compensation_table() {
 }
 
 static int compensation_create_entry_callback(void *NotUsed, int argc, char **argv, char **azColName) {
+  UNUSED(NotUsed);
   for (int i = 0; i < argc; ++i) {
     LOGGER(TRACE, "%s = %s", azColName[i], argv[i] ? argv[i] : "NULL");
   }
@@ -68,6 +71,8 @@ void compensation_create_entry(compensation_entry_t compensation_entry) {
 }
 
 static int compensation_get_sum_callback(void *total, int argc, char **argv, char **azColName) {
+  UNUSED(argc);
+  UNUSED(azColName);
   LOGGER(TRACE, "SUM(duration) computed to %s\n", argv[0]);
   if (argv[0] != NULL) { // argv[0] is 0x0 if the time table is empty
     *((uint64_t*)total) = strtol(argv[0], NULL, 10);

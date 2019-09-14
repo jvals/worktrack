@@ -12,8 +12,10 @@
 #include "time_repository.h"
 
 #define TIME_TABLE_NAME "time"
+#define UNUSED(x) (void)(x)
 
 static int time_callback(void *NotUsed, int argc, char **argv, char **azColName) {
+  UNUSED(NotUsed);
   for (int i = 0; i < argc; ++i) {
     LOGGER(TRACE, "%s = %s", azColName[i], argv[i] ? argv[i] : "NULL");
   }
@@ -96,6 +98,8 @@ void patch_latest(time_entry_t time_entry) {
 }
 
 static int get_total_sum_callback(void *total, int argc, char **argv, char **azColName) {
+  UNUSED(argc);
+  UNUSED(azColName);
   LOGGER(TRACE, "TODATE-FROMDATE sum computed to %s\n", argv[0]);
   if (argv[0] != NULL) { // argv[0] is 0x0 if the time table is empty
     *((uint64_t*)total) = strtol(argv[0], NULL, 10);
@@ -124,6 +128,8 @@ void get_total_diff(uint64_t *total) {
 }
 
 static int get_todays_sum_callback(void *total, int argc, char **argv, char **azColName) {
+  UNUSED(argc);
+  UNUSED(azColName);
   LOGGER(TRACE, "Todays time computed to %s\n", argv[0]);
   if (argv[0] != NULL) { // argv[0] is 0x0 if the time table is empty
     *((uint64_t*)total) = strtol(argv[0], NULL, 10);
@@ -152,6 +158,7 @@ void get_todays_diff(uint64_t *total) {
 }
 
 static int get_todays_unfinished_work_callback(void *total, int argc, char **argv, char **azColName) {
+  UNUSED(azColName);
   if (argc >= 2 && argv[0] != NULL && argv[1] == NULL) {
     time_t now;
     time(&now);
@@ -181,6 +188,7 @@ void get_todays_unfinished_work(uint64_t *total) {
 }
 
 static int get_unique_dates_callback(void *count, int argc, char **argv, char **azColName) {
+  UNUSED(azColName);
   if (argc >= 0) {
     LOGGER(INFO, "Unique dates in time table: %s\n", argv[0]);
     *((uint64_t*)count) = strtol(argv[0], NULL, 10);
@@ -209,6 +217,7 @@ void get_unique_dates(uint64_t *count) {
 }
 
 static int check_unfinished_work_callback(void *unfinished_work, int argc, char **argv, char **azColName) {
+  UNUSED(azColName);
   if (argc >= 0) {
     LOGGER(INFO, "Number of rows where todate is NULL: %s\n", argv[0]);
     *((bool*)unfinished_work) = (strtol(argv[0], NULL, 10) > 0);

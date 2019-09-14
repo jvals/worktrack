@@ -6,6 +6,8 @@
 #include "dashboard_controller.h"
 #include "time_service.h"
 
+#define UNUSED(x) (void)(x)
+
 char *replaceWord(const char *s, const char *oldW,
                                  const char *newW)
 {
@@ -49,6 +51,7 @@ char *replaceWord(const char *s, const char *oldW,
 }
 
 response_t get_dashboard(request_t req) {
+  UNUSED(req);
   response_t response;
 
   char http_body[1024] = {0};
@@ -89,6 +92,7 @@ response_t get_dashboard(request_t req) {
 }
 
 response_t post_dashboard(request_t req) {
+  UNUSED(req);
   response_t response;
 
   // Toggle time

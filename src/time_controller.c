@@ -6,7 +6,10 @@
 #include "time_controller.h"
 #include "time_service.h"
 
+#define UNUSED(x) (void)(x)
+
 response_t get_total_time(request_t req) {
+  UNUSED(req);
   response_t response;
 
   uint64_t total_diff = 0;
@@ -24,6 +27,7 @@ response_t get_total_time(request_t req) {
 }
 
 response_t start_time(request_t req) {
+  UNUSED(req);
   response_t response;
 
   time_service_create_entry();
@@ -38,6 +42,7 @@ response_t start_time(request_t req) {
 }
 
 response_t stop_time(request_t req) {
+  UNUSED(req);
   response_t response;
 
   time_service_stop_latest_entry();
@@ -52,6 +57,7 @@ response_t stop_time(request_t req) {
 }
 
 response_t get_todays_time(request_t req) {
+  UNUSED(req);
   response_t response;
 
   uint64_t todays_diff = 0;
@@ -69,6 +75,7 @@ response_t get_todays_time(request_t req) {
 }
 
 response_t get_overtime(request_t req) {
+  UNUSED(req);
   response_t response;
 
   uint64_t overtime = 0;
@@ -87,6 +94,7 @@ response_t get_overtime(request_t req) {
 
 
 response_t get_work_in_progress(request_t req) {
+  UNUSED(req);
   response_t response;
 
   bool work_in_progress = false;
