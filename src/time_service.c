@@ -5,6 +5,7 @@
 
 #include "time_entry_t.h"
 #include "time_repository.h"
+#include "compensation_repository.h"
 #include "time_service.h"
 
 void time_service_create_entry() {
@@ -78,4 +79,13 @@ bool time_service_unfinished_work() {
   check_unfinished_work(&any_unfinished_work);
 
   return any_unfinished_work;
+}
+
+uint64_t time_service_get_overtime_with_compensation() {
+  uint64_t overtime = time_service_get_overtime();
+
+  uint64_t total_compensation = 0;
+  compensation_get_sum(&total_compensation);
+
+  return overtime - total_compensation;
 }
