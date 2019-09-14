@@ -72,7 +72,7 @@ response_t get_overtime(request_t req) {
   response_t response;
 
   uint64_t overtime = 0;
-  overtime = time_service_get_overtime();
+  overtime = time_service_get_overtime_with_compensation();
   char http_body[128];
   sprintf(http_body, "%lld", overtime);
 
