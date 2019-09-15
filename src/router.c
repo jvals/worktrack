@@ -93,6 +93,7 @@ response_t route(request_t req) {
   response.content_length = 0;
   response.content_type = "";
   response.body = "";
+  response.location = "";
 
   return response;
 }
