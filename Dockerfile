@@ -17,6 +17,7 @@ RUN ["make"]
 FROM scratch
 COPY --from=build /usr/src/worktrack/server .
 COPY --from=build /usr/src/worktrack/routes.ini .
+COPY --from=build /usr/src/worktrack/index.html .
 #COPY --from=build /etc/passwd /etc/passwd
 #USER nobody
 CMD ["./server"]
