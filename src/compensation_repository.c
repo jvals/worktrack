@@ -65,7 +65,7 @@ void compensation_create_entry(compensation_entry_t compensation_entry) {
       sqlite3_free(error);
       exit(1);
     } else {
-      LOGGER(INFO, "Table with name '%s' created successfully\n", COMPENSATION_TABLE_NAME);
+      LOGGER(INFO, "Compensation entry successfully created\n", "");
     }
   }
 }
@@ -96,7 +96,7 @@ void compensation_get_sum(uint64_t *total) {
       sqlite3_free(error);
       exit(1);
     } else {
-      LOGGER(INFO, "Table with name '%s' created successfully\n", COMPENSATION_TABLE_NAME);
+      LOGGER(INFO, "Compensation sum successfully computed: %d\n", *total);
     }
   }
 }
