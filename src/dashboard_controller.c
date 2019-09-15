@@ -52,7 +52,7 @@ char *replaceWord(const char *s, const char *oldW,
 
 response_t get_dashboard(request_t req) {
   UNUSED(req);
-  response_t response;
+  response_t response = {0};
 
   char http_body[1024] = {0};
 
@@ -93,7 +93,7 @@ response_t get_dashboard(request_t req) {
 
 response_t post_dashboard(request_t req) {
   UNUSED(req);
-  response_t response;
+  response_t response = {0};
 
   // Toggle time
   bool status = time_service_unfinished_work();
