@@ -170,7 +170,7 @@ int server_listen(server_t* server) {
 
   err = (server->listen_fd = socket(AF_INET, SOCK_STREAM, 0));
   if (err == -1) {
-    LOGGER(FATAL, "socket %s", strerror(errno));
+    LOGGER(FATAL, "socket %s\n", strerror(errno));
     LOGGER(FATAL, "Failed to create socket endpoint\n", "");
     return err;
   }
@@ -178,14 +178,14 @@ int server_listen(server_t* server) {
   err = bind(server->listen_fd, (struct sockaddr*)&server_addr,
              sizeof(server_addr));
   if (err == -1) {
-    LOGGER(FATAL, "bind %s", strerror(errno));
+    LOGGER(FATAL, "bind %s\n", strerror(errno));
     LOGGER(FATAL, "Failed to bind socket to address\n", "");
     return err;
   }
 
   err = listen(server->listen_fd, BACKLOG);
   if (err == -1) {
-    LOGGER(FATAL, "listen %s", strerror(errno));
+    LOGGER(FATAL, "listen %s\n", strerror(errno));
     LOGGER(FATAL, "Failed to put socket in passive mode\n", "");
     return err;
   }
