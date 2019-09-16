@@ -116,9 +116,7 @@ int server_accept(server_t* server) {
 
   request.headers = headers;
 
-  // Parse body
-  LOGGER(TRACE, "Parsing request body\n", "");
-  LOGGER(DEBUG, "Ignoring request body\n", "");
+  // TODO Parse body
 
   // Verify request struct
   if (request.path == NULL) {
