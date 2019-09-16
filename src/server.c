@@ -134,6 +134,12 @@ int server_accept(server_t* server) {
   // Route the request to matching controller and action
   response_t response = route(request);
 
+  // Compute content-length of body
+  if (response.body != NULL) {
+    size_t content_length = strlen(response.body);
+    response.content_length = content_length;
+  }
+
   LOGGER(TRACE, "Response body: %s\n", response.body);
 
   char response_raw[2048];
@@ -145,6 +151,11 @@ int server_accept(server_t* server) {
           response.content_length,
           response.location,
           response.body);
+
+  // response body is populated by strdup, which uses malloc
+  if (response.body != NULL) {
+    free(response.body);
+  }
 
   err = send(conn_fd, response_raw, strlen(response_raw), NOSIGNAL);
   if (err == -1) {

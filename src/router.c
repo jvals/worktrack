@@ -92,7 +92,7 @@ response_t route(request_t req) {
   response.status_message = "Not found";
   response.content_length = 0;
   response.content_type = "";
-  response.body = "";
+  response.body = NULL;
   response.location = "";
 
   return response;
