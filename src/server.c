@@ -132,6 +132,10 @@ int server_accept(server_t* server) {
   // Route the request to matching controller and action
   response_t response = route(request);
 
+  // free request members
+  free(request.method);
+  free(request.path);
+
   // Compute content-length of body
   if (response.body != NULL) {
     size_t content_length = strlen(response.body);
@@ -148,7 +152,7 @@ int server_accept(server_t* server) {
           response.content_type,
           response.content_length,
           response.location,
-          response.body);
+          response.body == NULL ? "" : response.body);
 
   // response body is populated by strdup, which uses malloc
   if (response.body != NULL) {
