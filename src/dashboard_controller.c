@@ -108,7 +108,7 @@ response_t post_dashboard(request_t req) {
   response.content_length = 0;
   response.content_type = "";
   response.location = "/dashboard";
-  response.body = "";
+  response.body = NULL;
 
   return response;
 }

@@ -36,7 +36,7 @@ response_t start_time(request_t req) {
   response.status_message = "Created";
   response.content_length = 0;
   response.content_type = "";
-  response.body = "";
+  response.body = NULL;
 
   return response;
 }
@@ -51,7 +51,7 @@ response_t stop_time(request_t req) {
   response.status_message = "No Content";
   response.content_length = 0;
   response.content_type = "";
-  response.body = "";
+  response.body = NULL;
 
   return response;
 }
