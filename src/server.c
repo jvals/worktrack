@@ -188,6 +188,12 @@ int server_listen(server_t* server) {
     return err;
   }
 
+  // Allow server to reuse socket even if TIME_WAIT seconds has not passed
+  // Useful when developing and iterating fast; Fatal errors will often result in sockets remaining open and thus not allowing themselves to be reused for a set amount of time.
+  // Explanation: https://stackoverflow.com/a/3233022
+  // int option = 1;
+  // setsockopt(server->listen_fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+
   err = bind(server->listen_fd, (struct sockaddr*)&server_addr,
              sizeof(server_addr));
   if (err == -1) {
