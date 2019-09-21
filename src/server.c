@@ -12,6 +12,7 @@
 #include "response.h"
 #include "router.h"
 #include "error_codes.h"
+#include "config_t.h"
 
 #define BACKLOG 4
 
@@ -21,7 +22,7 @@
 #define NOSIGNAL SO_NOSIGPIPE
 #endif
 
-int server_accept(server_t* server) {
+int server_accept(server_t* server, config_t* config) {
   int err = 0;
   int conn_fd;
   socklen_t client_len;
@@ -89,18 +90,23 @@ int server_accept(server_t* server) {
       // Headers are of the format key:value, so we need to split again
       char* header_key = strsep(&request_line, ":");
       char* header_value = strdup(request_line);
+      char* header_value_orig = header_value;
+      // Remove first char if blank
+      if (header_value[0] == ' ') header_value++;
       if (header_key != NULL && header_value != NULL) {
-        if (strcmp(header_key, "Accept-Encoding")) {
+        if (strcmp(header_key, "Accept-Encoding") == 0) {
           headers.accept_encoding = header_value;
-        } else if (strcmp(header_key, "Connection")) {
+        } else if (strcmp(header_key, "Connection") == 0) {
           headers.connection = header_value;
-        } else if (strcmp(header_key, "Host")) {
+        } else if (strcmp(header_key, "Host") == 0) {
           headers.host = header_value;
-        } else if (strcmp(header_key, "User-Agent")) {
+        } else if (strcmp(header_key, "User-Agent") == 0) {
           headers.user_agent = header_value;
+        } else if (strcmp(header_key, "Authorization") == 0) {
+          headers.authorization = header_value;
         }
         LOGGER(TRACE, "Found header with key=%s and value=%s\n", header_key, header_value);
-        free(header_value);
+        free(header_value_orig);
       } else {
         LOGGER(DEBUG, "Malformed headers, dropping request", "");
         return MALFORMED_REQUEST;
@@ -130,7 +136,7 @@ int server_accept(server_t* server) {
   }
 
   // Route the request to matching controller and action
-  response_t response = route(request);
+  response_t response = route(request, config);
 
   // free request members
   free(request.method);

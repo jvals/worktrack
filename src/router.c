@@ -52,10 +52,26 @@ void deinit_name_action_map() {
   free(name_action_map);
 }
 
-response_t route(request_t req) {
+response_t route(request_t req, config_t* config) {
   LOGGER(TRACE, "Routing request with path=%s and method=%s\n", req.path, req.method);
 
   init_name_action_map();
+
+  // Validate authorization header
+  if (req.headers.authorization == NULL || config == NULL || config->bearer == NULL ||
+      strcmp(req.headers.authorization, config->bearer) != 0) {
+    // Respond with 403
+    LOGGER(DEBUG, "Request with token %s forbidden\n", req.headers.authorization);
+    response_t response;
+    response.status_code = 403;
+    response.status_message = "Forbidden";
+    response.content_length = 0;
+    response.content_type = "";
+    response.body = NULL;
+    response.location = "";
+
+    return response;
+  }
 
   // Iterate over the routes parsed from the routes.ini file to find a route
   // matching the request

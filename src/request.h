@@ -5,6 +5,7 @@ typedef struct headers {
   char* connection;
   char* host;
   char* user_agent;
+  char* authorization;
 } request_headers_t;
 
 typedef struct request {

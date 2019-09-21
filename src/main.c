@@ -8,6 +8,8 @@
 #include "init.h"
 #include "cleanup.h"
 #include "db_utils.h"
+#include "parse_config.h"
+#include "config_t.h"
 
 #define UNUSED(x) (void)(x)
 
@@ -36,6 +38,9 @@ int main(int argc, char* argv[]) {
   // Parse command line options
   parse_opts(argc, argv);
 
+  // Parse configuration file
+  config_t* config = parse_config();
+
   init();
   setvbuf(stdout, NULL, _IONBF, 0); // Always flush stdout
 
@@ -50,13 +55,14 @@ int main(int argc, char* argv[]) {
   }
 
   while (1) {
-    err = server_accept(&server); // Check TCP Socket for connections
+    err = server_accept(&server, config); // Check TCP Socket for connections
     if (err) {
       LOGGER(FATAL, "Failed accepting connection\n", "");
       return err;
     }
   }
 
+  free(config);
   cleanup();
 
   return 0;
