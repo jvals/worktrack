@@ -6,3 +6,5 @@ bin
 TAGS
 server
 *.db
+
+config.ini
