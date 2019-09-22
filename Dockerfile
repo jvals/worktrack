@@ -20,4 +20,4 @@ COPY --from=build /usr/src/worktrack/routes.ini .
 COPY --from=build /usr/src/worktrack/index.html .
 #COPY --from=build /etc/passwd /etc/passwd
 #USER nobody
-CMD ["./server -d /var/data/worktrack.db"]
+CMD ["./server", "-d", "/var/data/worktrack.db"]
