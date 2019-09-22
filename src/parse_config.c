@@ -14,7 +14,7 @@ static config_t* default_config() {
 }
 
 config_t* parse_config() {
-  const char* config_file_name = "config.ini";
+  const char* config_file_name = "/var/config/config.ini";
   FILE* fp = NULL;
   if ( (fp = fopen(config_file_name, "r")) == NULL ) {
       LOGGER(WARN, "Unable to read file <%s>. fopen failed with error: %s\n", config_file_name, strerror(errno));
