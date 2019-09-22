@@ -95,15 +95,15 @@ int server_accept(server_t* server, config_t* config) {
       if (header_value[0] == ' ') header_value++;
       if (header_key != NULL && header_value != NULL) {
         if (strcmp(header_key, "Accept-Encoding") == 0) {
-          headers.accept_encoding = header_value;
+          headers.accept_encoding = strdup(header_value);
         } else if (strcmp(header_key, "Connection") == 0) {
-          headers.connection = header_value;
+          headers.connection = strdup(header_value);
         } else if (strcmp(header_key, "Host") == 0) {
-          headers.host = header_value;
+          headers.host = strdup(header_value);
         } else if (strcmp(header_key, "User-Agent") == 0) {
-          headers.user_agent = header_value;
+          headers.user_agent = strdup(header_value);
         } else if (strcmp(header_key, "Authorization") == 0) {
-          headers.authorization = header_value;
+          headers.authorization = strdup(header_value);
         }
         LOGGER(TRACE, "Found header with key=%s and value=%s\n", header_key, header_value);
         free(header_value_orig);
@@ -141,6 +141,21 @@ int server_accept(server_t* server, config_t* config) {
   // free request members
   free(request.method);
   free(request.path);
+  if (request.headers.accept_encoding != NULL) {
+    free(request.headers.accept_encoding);
+  }
+  if (request.headers.connection != NULL) {
+    free(request.headers.connection);
+  }
+  if (request.headers.host != NULL) {
+    free(request.headers.host);
+  }
+  if (request.headers.user_agent != NULL) {
+    free(request.headers.user_agent);
+  }
+  if (request.headers.authorization != NULL) {
+    free(request.headers.authorization);
+  }
 
   // Compute content-length of body
   if (response.body != NULL) {

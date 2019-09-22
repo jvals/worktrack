@@ -3,3 +3,7 @@
 obj
 server
 *.db
+
+**/*.a
+**/*.o
+config.ini

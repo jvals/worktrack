@@ -6,12 +6,20 @@
 
 #include "config_t.h"
 
+static config_t* default_config() {
+  config_t* config = malloc(sizeof(config_t));
+  config->bearer = malloc(sizeof(char)*5);
+  sprintf(config->bearer, "1234");
+  return config;
+}
+
 config_t* parse_config() {
   const char* config_file_name = "config.ini";
   FILE* fp = NULL;
   if ( (fp = fopen(config_file_name, "r")) == NULL ) {
-      LOGGER(FATAL, "Unable to read file <%s>. fopen failed with error: %s\n", config_file_name, strerror(errno));
-      exit(1);
+      LOGGER(WARN, "Unable to read file <%s>. fopen failed with error: %s\n", config_file_name, strerror(errno));
+      LOGGER(WARN, "Using default config\n", "");
+      return default_config();
   } else {
       LOGGER(INFO, "Reading file %s\n", config_file_name);
   }
