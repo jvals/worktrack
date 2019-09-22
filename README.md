@@ -25,10 +25,6 @@ work session.
 ## How to run it?
 There are two ways to run the program, direct or Docker.
 
-### Prerequisites
-Create a config.ini file by copying config.ini.template. Remember to
-add a value for the authorization (can be anything but empty).
-
 ### Direct
 #### Dependecies
 * gcc/clang
