@@ -54,6 +54,7 @@ Build the Docker image:
 The `--rm` flag cleans up intermediate images, and the `-t` flag tags the image.
 
 Run a container from the image:
+
 `docker run -p 8080:8080 -d --rm --name worktrack worktrack:latest`
 
 This will expose the container port 8080 on the host port 8080. The `-d` flag runs the container in the background and the `--rm` flag cleans up the container after it exits. The `--name` flag names the container (we use this to easily check the logs without copying the container ID).
