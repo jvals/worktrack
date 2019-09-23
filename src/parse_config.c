@@ -29,6 +29,7 @@ config_t* parse_config() {
   char *line, *line_to_free;
   line = line_to_free = malloc(128 * sizeof(char));
   while(fgets(line, 128, fp) != NULL) {
+    line[strcspn(line, "\n")] = '\0'; // Replace the newline with a line end
     char* token = strsep(&line, "=");
     if (strcmp(token, "authorization") == 0) {
       config->bearer = strdup(line);
