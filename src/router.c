@@ -57,6 +57,7 @@ response_t route(request_t req, config_t* config) {
 
   init_name_action_map();
 
+  #ifdef AUTH
   // Validate authorization header
   if (req.headers.authorization == NULL || config == NULL || config->bearer == NULL ||
       strcmp(req.headers.authorization, config->bearer) != 0) {
@@ -72,6 +73,7 @@ response_t route(request_t req, config_t* config) {
 
     return response;
   }
+  #endif // AUTH
 
   // Iterate over the routes parsed from the routes.ini file to find a route
   // matching the request
