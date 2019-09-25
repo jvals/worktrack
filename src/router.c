@@ -1,13 +1,12 @@
+#include <logger.h>
 #include <stdlib.h>
 #include <string.h>
-#include <logger.h>
 
+#include "dashboard_controller.h"
 #include "route.h"
 #include "router.h"
-#include "time_controller.h"
-#include "dashboard_controller.h"
 #include "routes_parser.h"
-
+#include "time_controller.h"
 
 typedef struct name_action_mapping {
   char* action_name;
@@ -48,16 +47,14 @@ static void init_name_action_map() {
   name_action_map[idx++].action = post_dashboard;
 }
 
-void deinit_name_action_map() {
-  free(name_action_map);
-}
+void deinit_name_action_map() { free(name_action_map); }
 
 response_t route(request_t req, config_t* config) {
   LOGGER(TRACE, "Routing request with path=%s and method=%s\n", req.path, req.method);
 
   init_name_action_map();
 
-  #ifdef AUTH
+#ifdef AUTH
   // Validate authorization header
   if (req.headers.authorization == NULL || config == NULL || config->bearer == NULL ||
       strcmp(req.headers.authorization, config->bearer) != 0) {
@@ -73,7 +70,7 @@ response_t route(request_t req, config_t* config) {
 
     return response;
   }
-  #endif // AUTH
+#endif  // AUTH
 
   // Iterate over the routes parsed from the routes.ini file to find a route
   // matching the request
@@ -81,12 +78,12 @@ response_t route(request_t req, config_t* config) {
     if (routes[i].name == NULL) {
       break;
     }
-    if (strcmp(req.path, routes[i].path)==0 && strcmp(req.method, routes[i].method) == 0) {
+    if (strcmp(req.path, routes[i].path) == 0 && strcmp(req.method, routes[i].method) == 0) {
       LOGGER(TRACE, "Found matching route!\n", "");
 
       // Iterate over the name_action_map to find a matching implementation
       for (int j = 0; j < MAX_ROUTE_ARRAY_SIZE; ++j) {
-        if  (name_action_map[j].action_name == NULL) {
+        if (name_action_map[j].action_name == NULL) {
           break;
         }
         if (strcmp(routes[i].action, name_action_map[j].action_name) == 0) {

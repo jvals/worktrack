@@ -1,18 +1,18 @@
+#include <errno.h>
+#include <logger.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <errno.h>
-#include <logger.h>
-#include <stdlib.h>
 
-#include "server.h"
+#include "config_t.h"
+#include "error_codes.h"
 #include "request.h"
 #include "response.h"
 #include "router.h"
-#include "error_codes.h"
-#include "config_t.h"
+#include "server.h"
 
 #define BACKLOG 4
 
@@ -29,8 +29,7 @@ int server_accept(server_t* server, config_t* config) {
   struct sockaddr_in client_addr;
 
   client_len = sizeof(client_addr);
-  err = (conn_fd = accept(server->listen_fd, (struct sockaddr*)&client_addr,
-                          &client_len));
+  err = (conn_fd = accept(server->listen_fd, (struct sockaddr*)&client_addr, &client_len));
   if (err == -1) {
     LOGGER(FATAL, "accept %s", strerror(errno));
     LOGGER(FATAL, "failed accepting connection\n", "");
@@ -67,7 +66,7 @@ int server_accept(server_t* server, config_t* config) {
   char* token = NULL;
 
   int start_line_idx = 0;
-  while ( (token = strsep(&start_line, " ")) != NULL ) {
+  while ((token = strsep(&start_line, " ")) != NULL) {
     if (start_line_idx == 0) {
       LOGGER(TRACE, "token: %s\n", token);
       request.method = strdup(token);
@@ -81,8 +80,8 @@ int server_accept(server_t* server, config_t* config) {
   // Parse headers
   LOGGER(TRACE, "Parsing headers\n", "");
   char* request_line = NULL;
-  int consecutive_empty = 0; // Detecting when headers end and body begin
-  while ( (request_line = strsep(&request_raw, "\r\n")) != NULL ) {
+  int consecutive_empty = 0;  // Detecting when headers end and body begin
+  while ((request_line = strsep(&request_raw, "\r\n")) != NULL) {
     if (strcmp(request_line, "") == 0) {
       consecutive_empty++;
     } else {
@@ -167,13 +166,10 @@ int server_accept(server_t* server, config_t* config) {
 
   char response_raw[2048];
   // TODO: Optional headers
-  sprintf(response_raw, "HTTP/1.1 %d %s\nContent-Type: %s\nContent-Length: %d\nLocation: %s\nAccess-Control-Allow-Origin: *\n\n%s",
-          response.status_code,
-          response.status_message,
-          response.content_type,
-          response.content_length,
-          response.location,
-          response.body == NULL ? "" : response.body);
+  sprintf(response_raw,
+          "HTTP/1.1 %d %s\nContent-Type: %s\nContent-Length: %d\nLocation: %s\nAccess-Control-Allow-Origin: *\n\n%s",
+          response.status_code, response.status_message, response.content_type, response.content_length,
+          response.location, response.body == NULL ? "" : response.body);
 
   // response body is populated by strdup, which uses malloc
   if (response.body != NULL) {
@@ -182,7 +178,7 @@ int server_accept(server_t* server, config_t* config) {
 
   err = send(conn_fd, response_raw, strlen(response_raw), NOSIGNAL);
   if (err == -1) {
-      LOGGER(ERROR, "send %s", strerror(errno));
+    LOGGER(ERROR, "send %s", strerror(errno));
   }
   err = close(conn_fd);
   if (err == -1) {
@@ -210,13 +206,11 @@ int server_listen(server_t* server) {
   }
 
   // Allow server to reuse socket even if TIME_WAIT seconds has not passed
-  // Useful when developing and iterating fast; Fatal errors will often result in sockets remaining open and thus not allowing themselves to be reused for a set amount of time.
-  // Explanation: https://stackoverflow.com/a/3233022
-  // int option = 1;
-  // setsockopt(server->listen_fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+  // Useful when developing and iterating fast; Fatal errors will often result in sockets remaining open and thus not
+  // allowing themselves to be reused for a set amount of time. Explanation: https://stackoverflow.com/a/3233022 int
+  // option = 1; setsockopt(server->listen_fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 
-  err = bind(server->listen_fd, (struct sockaddr*)&server_addr,
-             sizeof(server_addr));
+  err = bind(server->listen_fd, (struct sockaddr*)&server_addr, sizeof(server_addr));
   if (err == -1) {
     LOGGER(FATAL, "bind %s\n", strerror(errno));
     LOGGER(FATAL, "Failed to bind socket to address\n", "");

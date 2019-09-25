@@ -1,11 +1,11 @@
 #include <logger.h>
-#include <time.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <time.h>
 
+#include "compensation_repository.h"
 #include "time_entry_t.h"
 #include "time_repository.h"
-#include "compensation_repository.h"
 #include "time_service.h"
 
 void time_service_create_entry() {
@@ -17,7 +17,7 @@ void time_service_create_entry() {
   LOGGER(TRACE, "Recording current timestamp=%d\n", now);
 
   time_entry.fromdate = now;
-  time_entry.todate = 0; // Is recorded as <null> in database
+  time_entry.todate = 0;  // Is recorded as <null> in database
 
   safe_new_entry(time_entry);
 }
@@ -29,7 +29,7 @@ void time_service_stop_latest_entry() {
   time_t now;
   time(&now);
   LOGGER(TRACE, "Recording current timestamp=%d\n", now);
-  time_entry.fromdate = 0; // Don't care
+  time_entry.fromdate = 0;  // Don't care
   time_entry.todate = now;
 
   patch_latest(time_entry);
@@ -69,7 +69,7 @@ uint64_t time_service_get_overtime() {
   uint64_t total_diff_without_today = 0;
   get_total_diff_without_today(&total_diff_without_today);
 
-  return total_diff_without_today - (unique_days_without_today * 27000); // 27000 = 7.5 * 60 * 60
+  return total_diff_without_today - (unique_days_without_today * 27000);  // 27000 = 7.5 * 60 * 60
 }
 
 bool time_service_unfinished_work() {

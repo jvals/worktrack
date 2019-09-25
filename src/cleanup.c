@@ -1,6 +1,6 @@
 #include "cleanup.h"
-#include "routes_parser.h"
 #include "db_utils.h"
+#include "routes_parser.h"
 
 void cleanup() {
   deinit_routes();

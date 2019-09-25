@@ -1,8 +1,8 @@
-#include <stdio.h>
 #include <errno.h>
-#include <string.h>
 #include <logger.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "routes_parser.h"
 
@@ -16,7 +16,7 @@ route_t* routes;
 void init_routes_from_ini() {
   // Open file
   FILE* fp = NULL;
-  if ( (fp = fopen(ROUTES_FILE_NAME, "r")) == NULL ) {
+  if ((fp = fopen(ROUTES_FILE_NAME, "r")) == NULL) {
     LOGGER(FATAL, "Unable to read file <%s>. fopen failed with error: %s\n", ROUTES_FILE_NAME, strerror(errno));
     exit(1);
   } else {
@@ -26,16 +26,16 @@ void init_routes_from_ini() {
   routes = calloc(sizeof(route_t), MAX_ROUTE_ARRAY_SIZE);
   char line[MAX_CONFIG_LINE_SIZE];
   int routes_idx = 0;
-  while(fgets(line, MAX_CONFIG_LINE_SIZE, fp) != NULL ) {
+  while (fgets(line, MAX_CONFIG_LINE_SIZE, fp) != NULL) {
     // Match section name
     if (line[0] == '[') {
-      routes[routes_idx].name = malloc(MAX_CONFIG_LINE_SIZE*sizeof(char));
+      routes[routes_idx].name = malloc(MAX_CONFIG_LINE_SIZE * sizeof(char));
       // Copy char by char to discard '[' and ']'
-      for(int i = 1; i < MAX_CONFIG_LINE_SIZE; i++) {
+      for (int i = 1; i < MAX_CONFIG_LINE_SIZE; i++) {
         if (line[i] != ']') {
-          routes[routes_idx].name[i-1] = line[i];
+          routes[routes_idx].name[i - 1] = line[i];
         } else {
-          routes[routes_idx].name[i-1] = '\0';
+          routes[routes_idx].name[i - 1] = '\0';
           break;
         }
       }
@@ -45,7 +45,7 @@ void init_routes_from_ini() {
       char* original_line;
       char* path_line = original_line = malloc(MAX_CONFIG_LINE_SIZE * sizeof(char));
       char* err = fgets(path_line, MAX_CONFIG_LINE_SIZE, fp);
-      if(err != NULL) {
+      if (err != NULL) {
         strsep(&path_line, "=");
         routes[routes_idx].path = strdup(path_line);
         // Remove trailing newline
@@ -60,7 +60,7 @@ void init_routes_from_ini() {
       LOGGER(TRACE, "Reading method for route %s\n", routes[routes_idx].name);
       char* method_line = original_line = malloc(MAX_CONFIG_LINE_SIZE * sizeof(char));
       err = fgets(method_line, MAX_CONFIG_LINE_SIZE, fp);
-      if(err != NULL) {
+      if (err != NULL) {
         strsep(&method_line, "=");
         routes[routes_idx].method = strdup(method_line);
         // Remove trailing newline
@@ -75,7 +75,7 @@ void init_routes_from_ini() {
       LOGGER(TRACE, "Reading action for route %s\n", routes[routes_idx].name);
       char* action_line = original_line = malloc(MAX_CONFIG_LINE_SIZE * sizeof(char));
       err = fgets(action_line, MAX_CONFIG_LINE_SIZE, fp);
-      if(err != NULL) {
+      if (err != NULL) {
         strsep(&action_line, "=");
         routes[routes_idx].action = strdup(action_line);
         // Remove trailing newline

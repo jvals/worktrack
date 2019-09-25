@@ -1,16 +1,14 @@
-#include <stdlib.h>
 #include <logger.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "db_utils.h"
 
-sqlite3 *db = NULL;
+sqlite3* db = NULL;
 
 char* database_path = NULL;
 
-void set_datebase_path(char* new_path) {
-  database_path = strdup(new_path);
-}
+void set_datebase_path(char* new_path) { database_path = strdup(new_path); }
 
 int open_db_connection() {
   int rc = 0;
@@ -45,6 +43,4 @@ int close_db_connection() {
   return 1;
 }
 
-sqlite3* getDb() {
-  return db;
-}
+sqlite3* getDb() { return db; }

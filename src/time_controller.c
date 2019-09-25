@@ -92,7 +92,6 @@ response_t get_overtime(request_t req) {
   return response;
 }
 
-
 response_t get_work_in_progress(request_t req) {
   UNUSED(req);
   response_t response = {0};
