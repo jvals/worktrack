@@ -15,8 +15,8 @@ The program is written in C using UNIX sockets. The main loop listens
 for incomming TCP requests and parses the requests manually. If a
 valid HTTP message is detected, the request is routed to a matching
 function. If there is no match for the path, a 404 response is
-dispatched. All requests must have an authorization header containing
-a constant bearer token.
+dispatched. If there is a match, an action will be performed and a
+proper response is written back on the TCP socket.
 
 SQLite is used for persistence. The most important table is the time
 table, which holds a "from" date and a "to" date stored as epoch
