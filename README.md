@@ -58,3 +58,6 @@ This will expose the container port 8080 on the host port 8080. The `-d` flag ru
 To observe the application:
 
 `docker logs worktrack`
+
+## Why was this made?
+I wanted to learn how to make a HTTP web server in C.
