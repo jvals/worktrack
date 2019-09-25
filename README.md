@@ -1,6 +1,8 @@
 # Worktracker
 
 ## What is this?
+Honestly, a spreadsheet with extra steps.
+
 The purpose of this project is to provide a simple way to record the
 amount of hours you spend at work. This is useful if you are working a
 lot of unregistered overtime. The API provides endpoints for starting
