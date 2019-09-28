@@ -61,5 +61,13 @@ To observe the application:
 
 `docker logs worktrack`
 
+## How to run the tests?
+### End to end tests
+`bash -x run_e2e_tests.sh`
+
+The `-x` make bash print each line before it is executed, giving you
+some idea of what is happening.
+
+
 ## Why was this made?
 I wanted to learn how to make a HTTP web server in C.

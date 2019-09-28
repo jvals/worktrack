@@ -1,5 +1,6 @@
 language: c
 script:
 - diff -uq <(cat src/*) <(clang-format src/*)
+- ./run_e2e_tests.sh
 git:
   depth: 1
