@@ -11,6 +11,7 @@ jobs:
   include:
     - stage: "Code Style"
       script: diff -uq <(cat src/*) <(clang-format src/*)
+      name: "clang-format"
     - stage: "Build and Test"
       script:
         - cd clogger && LD=gcc make && cd - && LD=gcc make
@@ -18,3 +19,4 @@ jobs:
       name: "End to End Tests"
     - stage: "Deploy"
       script: bash deploy.sh
+      name: "build arm binary, run tests and deploy"
