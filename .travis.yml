@@ -12,8 +12,8 @@ jobs:
     - stage: "Code Style"
       script: diff -uq <(cat src/*) <(clang-format src/*)
     - stage: "Build and Test"
-    - script:
-        - cd clogger && make && cd - && make
+      script:
+        - cd clogger && LD=gcc make && cd - && LD=gcc make
         - ./run_e2e_tests.sh
       name: "End to End Tests"
     - stage: "Deploy"
