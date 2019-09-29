@@ -31,6 +31,7 @@ CC=arm-linux-gnueabihf-gcc \
 
 # Test the arm binary
 sudo apt install qemu-user -y
+sduo apt install qemu-user-binfmt -y
 sudo apt install sqlite3 -y
 ./run_e2e_tests.sh
 
