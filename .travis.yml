@@ -1,6 +1,19 @@
 language: c
-script:
-- diff -uq <(cat src/*) <(clang-format src/*)
-- ./run_e2e_tests.sh
+
 git:
   depth: 1
+
+# stages:
+#   - name: "Deploy"
+#     if: branch = master
+
+jobs:
+  include:
+    - stage: "Code Style"
+      script: diff -uq <(cat src/*) <(clang-format src/*)
+    - stage: "Build and Test"
+    - install: cd clogger && make && cd - && make
+    - script: ./run_e2e_tests.sh
+      name: "End to End Tests"
+    - stage: "Deploy"
+      script: bash deploy.sh
