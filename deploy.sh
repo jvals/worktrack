@@ -1,7 +1,7 @@
 sudo apt -qq update
 
 # Install the compiler used for cross compiling
-sudo apt-get -qq install gcc-arm-linux-gnueabihf -y
+sudo apt-get -qq install gcc-arm-linux-gnueabihf -y > /dev/null
 
 # Update sources with armhf ports
 cat << EOF | sudo tee /etc/apt/sources.list
@@ -15,7 +15,7 @@ sudo dpkg --add-architecture armhf
 sudo apt-get -qq update
 
 # We need the arm version of libsqlite3-dev
-sudo apt-get -qq install libsqlite3-dev:armhf -y
+sudo apt-get -qq install libsqlite3-dev:armhf -y > /dev/null
 
 # Make clogger
 cd clogger
@@ -30,8 +30,8 @@ CC=arm-linux-gnueabihf-gcc \
   make
 
 # Test the arm binary
-sudo apt-get -qq install qemu-user -y
-sudo apt-get -qq install qemu-user-binfmt -y
-sudo apt-get -qq install sqlite3 -y
+sudo apt-get -qq install qemu-user -y > /dev/null
+sudo apt-get -qq install qemu-user-binfmt -y > /dev/null
+sudo apt-get -qq install sqlite3 -y > /dev/null
 ./run_e2e_tests.sh
 
