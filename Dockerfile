@@ -6,7 +6,7 @@ RUN apk add sqlite-static
 
 # Enable static linking. The final binary will
 # contain everything needed to run, including sqlite.
-ENV LDFLAGS -static
+ENV LDFLAGS -Lclogger -static -llogger -lsqlite3
 COPY . /usr/src/worktrack
 WORKDIR /usr/src/worktrack/clogger
 RUN ["make"]
