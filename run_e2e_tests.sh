@@ -18,10 +18,6 @@ clearDbAndStopServer() {
 
 
 main () {
-    echo "Purge and build"
-    cd clogger && make purge && make && cd -
-    make purge && make
-
     echo "Start the server"
     ./server -d end_to_end_tests.db >/dev/null &
     SERVER_ID=$!
