@@ -6,6 +6,8 @@ git:
 services:
   - docker
 
+dist: xenial
+
 # stages:
 #   - name: "Deploy"
 #     if: branch = master
