@@ -35,3 +35,13 @@ sudo apt-get -qq install qemu-user-binfmt -y > /dev/null
 sudo apt-get -qq install sqlite3 -y > /dev/null
 ./run_e2e_tests.sh
 
+# Deploy
+APP_NAME="worktrack"
+HASH=$(git rev-parse --short HEAD)
+IMAGE_NAME="$DOCKER_REGISTRY_URL/$APP_NAME"
+
+docker build --tag "$IMAGE_NAME:$HASH" --tag "$IMAGE_NAME:latest" -f Dockerfile_run .
+
+echo "$DOCKER_REGISTRY_PW" | docker login -u "$DOCKER_REGISTRY_USER" --password-stdin "$DOCKER_REGISTRY_URL"
+docker push "$IMAGE_NAME:$HASH"
+docker push "$IMAGE_NAME:latest"

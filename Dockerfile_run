@@ -1,0 +1,7 @@
+FROM scratch
+
+COPY server .
+COPY routes.ini .
+COPY index.html .
+
+CMD ["./server", "-d", "/var/data/worktrack.db"]
