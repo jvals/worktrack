@@ -1,7 +1,7 @@
 FROM scratch
 
-COPY server .
-COPY routes.ini .
-COPY index.html .
+COPY ./server /server
+COPY ./routes.ini /routes.ini
+COPY ./index.html /index.html
 
 CMD ["./server", "-d", "/var/data/worktrack.db"]

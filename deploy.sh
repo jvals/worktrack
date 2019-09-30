@@ -1,3 +1,5 @@
+set -e
+
 sudo apt -qq update
 
 # Install the compiler used for cross compiling
