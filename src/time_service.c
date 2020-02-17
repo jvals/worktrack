@@ -89,3 +89,14 @@ uint64_t time_service_get_overtime_with_compensation() {
 
   return overtime - total_compensation;
 }
+
+void time_service_get_all_work(char** all_work) {
+  time_repository_get_all_work(all_work);
+}
+
+void time_service_update_work_start(char* id, char* new_work_start) {
+  time_repository_update_work_start(id, new_work_start);
+}
+void time_service_update_work_end(char* id, char* new_work_end) {
+  time_repository_update_work_end(id, new_work_end);
+}

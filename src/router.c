@@ -45,6 +45,21 @@ static void init_name_action_map() {
 
   name_action_map[idx].action_name = "post_dashboard";
   name_action_map[idx++].action = post_dashboard;
+
+  name_action_map[idx].action_name = "get_all_work";
+  name_action_map[idx++].action = get_all_work;
+
+  name_action_map[idx].action_name = "update_work_start";
+  name_action_map[idx++].action = update_work_start;
+
+  name_action_map[idx].action_name = "update_work_start_options";
+  name_action_map[idx++].action = update_work_start_options;
+
+  name_action_map[idx].action_name = "update_work_end";
+  name_action_map[idx++].action = update_work_end;
+
+    name_action_map[idx].action_name = "update_work_end_options";
+  name_action_map[idx++].action = update_work_end_options;
 }
 
 void deinit_name_action_map() { free(name_action_map); }

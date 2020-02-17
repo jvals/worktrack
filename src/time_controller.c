@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 #include "time_controller.h"
 #include "time_service.h"
@@ -106,6 +108,99 @@ response_t get_work_in_progress(request_t req) {
   response.content_length = 1024;
   response.content_type = "text/plain";
   response.body = strdup(http_body);
+
+  return response;
+}
+
+response_t get_all_work(request_t req) {
+  UNUSED(req);
+  response_t response = {0};
+
+  char* all_work = NULL;
+  time_service_get_all_work(&all_work);
+
+  response.status_code = 200;
+  response.status_message = "OK";
+  response.content_length = 1024;
+  response.content_type = "text/plain";
+  response.body = strdup((all_work == NULL) ? "" : all_work);
+
+  if (all_work != NULL) {
+    free(all_work);
+  }
+
+  return response;
+}
+
+// TODO move this to somewhere else
+static bool stringIsNumeric(char* str) {
+  char *character;
+  for (character = str; *character != '\0'; character++) {
+    if (!isdigit(*character)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+response_t update_work_start(request_t req) {
+  response_t response = {0};
+
+  char *id = strsep(&(req.body), ";");
+  char *new_work_start = req.body;
+
+  if (stringIsNumeric(id) && stringIsNumeric(new_work_start)) {
+    time_service_update_work_start(id, new_work_start);
+  }
+
+  response.status_code = 204;
+  response.status_message = "No Content";
+  response.content_length = 0;
+  response.content_type = "";
+  response.body = NULL;
+
+  return response;
+}
+
+response_t update_work_end(request_t req) {
+  response_t response = {0};
+
+  char *id = strsep(&(req.body), ";");
+  char *new_work_start = req.body;
+
+  if (stringIsNumeric(id) && stringIsNumeric(new_work_start)) {
+    time_service_update_work_end(id, new_work_start);
+  }
+
+  response.status_code = 204;
+  response.status_message = "No Content";
+  response.content_length = 0;
+  response.content_type = "";
+  response.body = NULL;
+
+  return response;
+}
+
+response_t update_work_start_options(request_t req) {
+  response_t response = {0};
+  response.status_code = 204;
+  response.status_message = "No Content";
+  response.content_length = 0;
+  response.content_type = "";
+  response.allow = "OPTIONS, PATCH";
+  response.body = NULL;
+
+  return response;
+}
+
+response_t update_work_end_options(request_t req) {
+  response_t response = {0};
+  response.status_code = 204;
+  response.status_message = "No Content";
+  response.content_length = 0;
+  response.content_type = "";
+  response.allow = "OPTIONS, PATCH";
+  response.body = NULL;
 
   return response;
 }

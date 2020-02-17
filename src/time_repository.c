@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #include "db_utils.h"
 #include "time_entry_t.h"
@@ -293,6 +294,115 @@ void get_total_diff_without_today(uint64_t *total) {
       exit(1);
     } else {
       LOGGER(DEBUG, "Successfully collected the total time spent!\n", "");
+    }
+  }
+}
+
+static int get_size_of_all_work_callback(void *result_size, int argc, char **argv, char **azColName) {
+  UNUSED(azColName);
+
+  for(int i = 0; i < argc; i++) {
+    if (argv[i] != NULL) {
+      *((size_t *)result_size) += strlen(argv[i]);
+    }
+  }
+
+  *((size_t *)result_size) += 16; // newline
+
+  return 0;
+
+}
+
+static int get_all_work_callback(void *all_work, int argc, char **argv, char **azColName) {
+  UNUSED(azColName);
+
+  for(int i = 0; i < argc; i++) {
+    if (argv[i] != NULL) {
+      strcat((char *)all_work, argv[i]);
+      if (i < argc - 1) {
+        strcat((char *)all_work, ", ");
+      }
+    }
+  }
+
+  strcat((char *)all_work, "\n");
+
+  return 0;
+}
+
+void time_repository_get_all_work(char **all_work) {
+  sqlite3 *db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+
+    // Compute size of result set
+    size_t result_size = 0;
+    char sql_raw[1024];
+    sprintf(sql_raw, "select * from %s", TIME_TABLE_NAME);
+    char *error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, get_size_of_all_work_callback, &result_size, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to get size of all the work from table %s: %s\n", TIME_TABLE_NAME, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully collected size of all the work!\n", "");
+    }
+
+    // Get all the work
+    *all_work = calloc(1, result_size);
+    error = NULL;
+    rc = sqlite3_exec(db, sql_raw, get_all_work_callback, *all_work, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to get all the work from table %s: %s\n", TIME_TABLE_NAME, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully collected all the work!\n", "");
+    }
+  }
+}
+
+void time_repository_update_work_start(char* id, char* new_work_start) {
+  sqlite3 *db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+
+    char sql_raw[1024];
+    sprintf(sql_raw, "update %s set fromdate=%s where id=%s", TIME_TABLE_NAME, new_work_start, id);
+    char *error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, NULL, NULL, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to update fromdate to %s on work with id %s: %s\n", new_work_start, id, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully set fromdate to %s on work with id %s\n", new_work_start, id);
+    }
+  }
+}
+
+void time_repository_update_work_end(char* id, char* new_work_end) {
+  sqlite3 *db = getDb();
+  if (db == NULL) {
+    LOGGER(FATAL, "Unable to get database pointer\n", "");
+    exit(1);
+  } else {
+
+    char sql_raw[1024];
+    sprintf(sql_raw, "update %s set todate=%s where id=%s", TIME_TABLE_NAME, new_work_end, id);
+    char *error = NULL;
+    int rc = sqlite3_exec(db, sql_raw, NULL, NULL, &error);
+    if (rc != SQLITE_OK) {
+      LOGGER(FATAL, "Unable to update todate to %s on work with id %s: %s\n", new_work_end, id, error);
+      sqlite3_free(error);
+      exit(1);
+    } else {
+      LOGGER(DEBUG, "Successfully set todate to %s on work with id %s\n", new_work_end, id);
     }
   }
 }

@@ -6,5 +6,6 @@ typedef struct response {
   int content_length;
   char* content_type;
   char* location;
+  char* allow;
   char* body;
 } response_t;

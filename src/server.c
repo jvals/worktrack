@@ -117,11 +117,14 @@ int server_accept(server_t* server, config_t* config) {
       break;
     }
   }
-  free(original_request_raw);
 
   request.headers = headers;
 
-  // TODO Parse body
+  char* body = strdup(request_raw);
+  request.body = body;
+
+  free(original_request_raw);
+
 
   // Verify request struct
   if (request.path == NULL) {
@@ -155,6 +158,9 @@ int server_accept(server_t* server, config_t* config) {
   if (request.headers.authorization != NULL) {
     free(request.headers.authorization);
   }
+  if (request.body != NULL) {
+    free(request.body);
+  }
 
   // Compute content-length of body
   if (response.body != NULL) {
@@ -164,12 +170,12 @@ int server_accept(server_t* server, config_t* config) {
 
   LOGGER(TRACE, "Response body: %s\n", response.body);
 
-  char response_raw[2048];
+  char response_raw[10000]; // should be vla, but that crashes...
   // TODO: Optional headers
   sprintf(response_raw,
-          "HTTP/1.1 %d %s\nContent-Type: %s\nContent-Length: %d\nLocation: %s\nAccess-Control-Allow-Origin: *\n\n%s",
+          "HTTP/1.1 %d %s\nContent-Type: %s\nContent-Length: %d\nLocation: %s\nAccess-Control-Allow-Origin: *\nAllow: %s\nAccess-Control-Allow-Methods: %s\n\n%s",
           response.status_code, response.status_message, response.content_type, response.content_length,
-          response.location, response.body == NULL ? "" : response.body);
+          response.location, response.allow, response.allow, response.body == NULL ? "" : response.body);
 
   // response body is populated by strdup, which uses malloc
   if (response.body != NULL) {

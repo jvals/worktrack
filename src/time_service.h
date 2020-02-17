@@ -11,3 +11,6 @@ uint64_t time_service_get_todays_diff(void);
 uint64_t time_service_get_overtime(void);
 bool time_service_unfinished_work(void);
 uint64_t time_service_get_overtime_with_compensation(void);
+void time_service_get_all_work(char**);
+void time_service_update_work_start(char*, char*);
+void time_service_update_work_end(char*, char*);
